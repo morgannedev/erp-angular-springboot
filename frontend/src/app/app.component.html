@@ -1,0 +1,25 @@
+<ng-container *ngIf="isReady$ | async; else loading">
+
+  <ng-container *ngIf="isAuthenticated$ | async; else publicPage">
+    <div class="app-shell">
+      <app-sidebar></app-sidebar>
+      <div class="app-content">
+        <app-navbar></app-navbar>
+        <main class="app-main">
+          <router-outlet></router-outlet>
+        </main>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-template #publicPage>
+    <router-outlet></router-outlet>
+  </ng-template>
+
+</ng-container>
+
+<ng-template #loading>
+  <div class="initial-splash-loader">
+    <div class="spinner"></div>
+  </div>
+</ng-template>

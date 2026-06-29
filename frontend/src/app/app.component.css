@@ -1,0 +1,21 @@
+.initial-splash-loader {
+  width: 100vw;
+  height: 100vh;
+  background-color: #060a13; /* Tu color oscuro de fondo */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(255, 255, 255, 0.05);
+  border-radius: 50%;
+  border-top-color: var(--lime, #c6f135); /* Tu verde flúor característico */
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
