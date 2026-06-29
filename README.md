@@ -255,14 +255,3 @@ algedro-erp/
     └── workflows/
         └── ci.yml
 ```
-
----
-
-## Consideraciones antes de producción
-
-- Reemplazar `JWT_SECRET` por un secreto privado de al menos 32 caracteres.
-- Cambiar `POSTGRES_PASSWORD` por una contraseña segura.
-- Evaluar si desactivar `R__seed.sql` en producción real (actualmente solo se ejecuta en perfil `dev`).
-- Añadir HTTPS si el proyecto se expone en internet (Caddy, Nginx Proxy Manager o Cloudflare Tunnel).
-- Configurar backups periódicos de PostgreSQL.
-- El token JWT se almacena en memoria: si el usuario refresca la página, la sesión se pierde y debe volver a autenticarse.
