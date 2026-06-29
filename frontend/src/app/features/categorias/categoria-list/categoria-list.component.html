@@ -1,0 +1,98 @@
+<div class="main-glass-workspace">
+  <div class="categories-shell">
+    <header class="topbar">
+      <div>
+        <h1>CATEGORÍAS</h1>
+        <p>Gestión de categorías y subcategorías</p>
+      </div>
+      <div class="actions">
+        <a *ngIf="esAdmin" routerLink="nuevo" class="btn-primary">
+          <i class="fas fa-plus"></i> Nueva categoría
+        </a>
+      </div>
+    </header>
+
+    <div class="table-container" *ngIf="categorias.length > 0; else vacio">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Tipo</th>
+              <th>Estado</th>
+              <th *ngIf="esAdmin">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <ng-container *ngFor="let raiz of categorias">
+              <tr class="category-row">
+                <td class="name-cell">
+                  <i class="fas fa-folder-open category-icon"></i>
+                  {{ raiz.nombre }}
+                </td>
+                <td>
+                  <span class="badge badge-category">RAÍZ</span>
+                </td>
+                <td>
+                  <span [class]="raiz.activo ? 'badge badge-ok' : 'badge badge-off'">
+                    {{ raiz.activo ? 'ACTIVO' : 'INACTIVO' }}
+                  </span>
+                </td>
+                <td *ngIf="esAdmin" class="actions-cell">
+                  <a [routerLink]="[raiz.id, 'editar']" class="btn-icon" title="Editar">
+                    <i class="fas fa-edit"></i>
+                  </a>
+                  <button (click)="toggleEstado(raiz.id, raiz.activo)" class="btn-icon" 
+                    [class.danger]="raiz.activo" [title]="raiz.activo ? 'Desactivar' : 'Activar'">
+                    <i [class]="raiz.activo ? 'fas fa-toggle-off' : 'fas fa-toggle-on'"></i>
+                  </button>
+                  <!-- ✅ Botón Eliminar para categoría raíz -->
+                  <button (click)="eliminar(raiz.id, raiz.nombre)" class="btn-icon danger" title="Eliminar">
+                    <i class="fas fa-trash-alt"></i>
+                  </button>
+                </td>
+              </tr>
+              <tr *ngFor="let sub of raiz.subcategorias" class="subcategory-row">
+                <td class="name-cell indent">
+                  <i class="fas fa-folder category-icon sub-icon"></i>
+                  {{ sub.nombre }}
+                </td>
+                <td>
+                  <span class="badge badge-subcategory">SUBCATEGORÍA</span>
+                </td>
+                <td>
+                  <span [class]="sub.activo ? 'badge badge-ok' : 'badge badge-off'">
+                    {{ sub.activo ? 'ACTIVO' : 'INACTIVO' }}
+                  </span>
+                </td>
+                <td *ngIf="esAdmin" class="actions-cell">
+                  <a [routerLink]="[sub.id, 'editar']" class="btn-icon" title="Editar">
+                    <i class="fas fa-edit"></i>
+                  </a>
+                  <button (click)="toggleEstado(sub.id, sub.activo)" class="btn-icon" 
+                    [class.danger]="sub.activo" [title]="sub.activo ? 'Desactivar' : 'Activar'">
+                    <i [class]="sub.activo ? 'fas fa-toggle-off' : 'fas fa-toggle-on'"></i>
+                  </button>
+                  <!-- ✅ Botón Eliminar para subcategoría -->
+                  <button (click)="eliminar(sub.id, sub.nombre)" class="btn-icon danger" title="Eliminar">
+                    <i class="fas fa-trash-alt"></i>
+                  </button>
+                </td>
+              </tr>
+            </ng-container>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <ng-template #vacio>
+      <div class="empty-state">
+        <i class="fas fa-folder-open"></i>
+        <p>No hay categorías registradas</p>
+        <a *ngIf="esAdmin" routerLink="nuevo" class="btn-primary">
+          <i class="fas fa-plus"></i> Crear primera categoría
+        </a>
+      </div>
+    </ng-template>
+  </div>
+</div>

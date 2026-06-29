@@ -1,0 +1,85 @@
+<div class="main-glass-workspace">
+  <div class="form-shell">
+    <header class="topbar">
+      <div>
+        <h1>{{ modoEdicion ? 'EDITAR CATEGORÍA' : 'NUEVA CATEGORÍA' }}</h1>
+        <p>{{ modoEdicion ? 'Modificar información de la categoría' : 'Añadir nueva categoría al sistema' }}</p>
+      </div>
+      <div class="actions">
+        <button type="button" class="btn-secondary" (click)="cancelar()">
+          <i class="fas fa-times"></i> Cancelar
+        </button>
+      </div>
+    </header>
+
+    <form [formGroup]="form" (ngSubmit)="guardar()" class="category-form">
+      <div class="form-grid">
+        <!-- Columna izquierda -->
+        <div class="form-column">
+          <div class="form-group">
+            <label class="form-label required">Nombre de la categoría</label>
+            <input formControlName="nombre" maxlength="100" class="form-control" 
+                   [class.is-invalid]="campoInvalido('nombre')" 
+                   placeholder="Ej: Electrónica, Ropa, Hogar..." />
+            <small class="error" *ngIf="campoInvalido('nombre') && campo('nombre')?.errors?.['required']">
+              <i class="fas fa-exclamation-circle"></i> El nombre es obligatorio
+            </small>
+            <small class="hint" *ngIf="!campoInvalido('nombre')">
+              <i class="fas fa-info-circle"></i> Máximo 100 caracteres
+            </small>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Descripción</label>
+            <textarea formControlName="descripcion" maxlength="255" rows="4" class="form-control" 
+                      placeholder="Descripción detallada de la categoría..."></textarea>
+            <small class="hint">
+              <i class="fas fa-info-circle"></i> Descripción opcional (máx. 255 caracteres)
+            </small>
+          </div>
+        </div>
+
+        <!-- Columna derecha -->
+        <div class="form-column">
+          <div class="form-group">
+            <label class="form-label">Categoría padre</label>
+            <select formControlName="padreId" class="form-control">
+              <option [ngValue]="null">Sin padre (categoría raíz)</option>
+              <option *ngFor="let c of raices" [ngValue]="c.id">
+                {{ c.nombre }}
+              </option>
+            </select>
+            <small class="hint">
+              <i class="fas fa-sitemap"></i> 
+              Selecciona una categoría padre para crear una subcategoría
+            </small>
+          </div>
+
+          <!-- Información visual de jerarquía -->
+          <div class="info-card" *ngIf="!modoEdicion && form.get('padreId')?.value">
+            <i class="fas fa-info-circle"></i>
+            <span>Esta será una <strong>subcategoría</strong> dentro de la jerarquía</span>
+          </div>
+
+          <div class="info-card info-warning" *ngIf="modoEdicion">
+            <i class="fas fa-shield-alt"></i>
+            <span>No puedes seleccionar esta misma categoría como padre</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" [disabled]="form.invalid || guardando" class="btn-primary">
+          <i class="fas fa-save"></i> {{ guardando ? 'Guardando...' : 'Guardar categoría' }}
+        </button>
+        <button type="button" (click)="cancelar()" class="btn-secondary">
+          <i class="fas fa-arrow-left"></i> Volver
+        </button>
+      </div>
+
+      <div *ngIf="errorGeneral" class="alert alert-error">
+        <i class="fas fa-exclamation-triangle"></i> {{ errorGeneral }}
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,117 @@
+<div class="main-glass-workspace">
+  <div class="empleados-shell">
+    <header class="topbar">
+      <div>
+        <h1>EMPLEADOS</h1>
+        <p>Gestión de personal y cuentas de usuario</p>
+      </div>
+      <div class="actions">
+        <a routerLink="/empleados/nuevo" class="btn-primary" *ngIf="esAdmin">
+          <i class="fas fa-plus"></i> Nuevo empleado
+        </a>
+      </div>
+    </header>
+
+    <div class="filters-section">
+      <div class="filters-grid">
+        <div class="search-wrapper">
+          <i class="fas fa-search search-icon"></i>
+          <input
+            [formControl]="searchControl"
+            type="search"
+            placeholder="Buscar por nombre o apellidos..."
+            class="search-input"
+          />
+        </div>
+        <div class="filter-wrapper">
+          <i class="fas fa-filter filter-icon"></i>
+          <select [formControl]="activeControl" class="filter-select">
+            <option value="">Todos los empleados</option>
+            <option value="true">Cuentas activas</option>
+            <option value="false">Cuentas inactivas</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="table-container" *ngIf="!isLoading; else cargando">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Empleado</th>
+              <th>Usuario</th>
+              <th>Rol</th>
+              <th>Cargo</th>
+              <th>Estado cuenta</th>
+              <th class="actions-header" *ngIf="esAdmin">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let empleado of empleados">
+              <td class="employee-cell">
+                <i class="fas fa-user-circle employee-icon"></i>
+                <div class="employee-info">
+                  <span class="employee-name">{{ empleado.apellidos }}, {{ empleado.nombre }}</span>
+                  <small class="employee-contact">{{ empleado.email || empleado.telefono || 'Sin contacto' }}</small>
+                </div>
+              </td>
+              <td>
+                <div class="username-cell">
+                  <i class="fas fa-at"></i>
+                  <span>{{ empleado.username }}</span>
+                </div>
+              </td>
+              <td>
+                <span [class]="'badge badge-rol-' + (empleado.rol | lowercase)">
+                  {{ empleado.rol }}
+                </span>
+              </td>
+              <td>{{ empleado.cargo || '—' }}</td>
+              <td>
+                <button
+                  type="button"
+                  class="state-button"
+                  [class.active]="empleado.cuentaActiva"
+                  [class.inactive]="!empleado.cuentaActiva"
+                  (click)="toggleCuenta(empleado)"
+                  [disabled]="!esAdmin"
+                  [title]="!esAdmin ? 'Solo administradores pueden cambiar el estado' : ''">
+                  <i [class]="empleado.cuentaActiva ? 'fas fa-toggle-on' : 'fas fa-toggle-off'"></i>
+                  {{ empleado.cuentaActiva ? 'ACTIVA' : 'INACTIVA' }}
+                </button>
+              </td>
+              <td class="actions-cell" *ngIf="esAdmin">
+                <a [routerLink]="['/empleados', empleado.id, 'editar']" class="btn-icon" title="Editar">
+                  <i class="fas fa-edit"></i>
+                </a>
+                <button (click)="eliminar(empleado)" class="btn-icon danger" title="Eliminar">
+                  <i class="fas fa-trash-alt"></i>
+                </button>
+              </td>
+            </tr>
+            <tr *ngIf="empleados.length === 0">
+              <td colspan="6" class="empty-state-cell">
+                <div class="empty-state">
+                  <i class="fas fa-users"></i>
+                  <p>No hay empleados con esos filtros</p>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div *ngIf="errorMessage" class="alert alert-error">
+      <i class="fas fa-exclamation-triangle"></i> {{ errorMessage }}
+    </div>
+
+    <ng-template #cargando>
+      <div class="loading-state">
+        <i class="fas fa-spinner fa-spin"></i>
+        <p>Cargando empleados...</p>
+      </div>
+    </ng-template>
+  </div>
+</div>

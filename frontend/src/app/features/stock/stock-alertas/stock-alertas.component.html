@@ -1,0 +1,95 @@
+<div class="main-glass-workspace">
+  <div class="stock-shell">
+    <header class="topbar">
+      <div>
+        <h1>ALERTAS DE STOCK</h1>
+        <p>Productos por debajo del stock mínimo</p>
+      </div>
+      <div class="actions">
+        <a routerLink="/stock" class="btn-secondary">
+          <i class="fas fa-arrow-left"></i> Volver a stock
+        </a>
+        <a routerLink="/" class="btn-primary">
+          <i class="fas fa-tachometer-alt"></i> Dashboard
+        </a>
+      </div>
+    </header>
+
+    <div class="alert-info" *ngIf="page && page.totalElementos > 0">
+      <i class="fas fa-exclamation-triangle"></i>
+      <span>Hay <strong>{{ page.totalElementos }}</strong> productos que requieren atención</span>
+    </div>
+
+    <div class="table-container" *ngIf="page; else cargando">
+      <div class="table-wrap" *ngIf="page.contenido.length > 0; else sinAlertas">
+        <table>
+          <thead>
+            <tr>
+              <th>Referencia</th>
+              <th>Producto</th>
+              <th>Stock actual</th>
+              <th>Stock mínimo</th>
+              <th>Proveedor</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of page.contenido" class="alert-row">
+              <td class="ref-cell">{{ item.referencia }}</td>
+              <td class="name-cell">
+                <strong>{{ item.nombre }}</strong>
+              </td>
+              <td class="stock-cell">
+                <span class="badge badge-danger">
+                  <i class="fas fa-exclamation-circle"></i> {{ item.stockActual }}
+                </span>
+              </td>
+              <td class="minimo-cell">
+                <span class="badge badge-warning">
+                  <i class="fas fa-arrow-down"></i> {{ item.stockMinimo }}
+                </span>
+              </td>
+              <td class="proveedor-cell">
+                <span *ngIf="item.proveedorNombre; else sinProveedor">
+                  <i class="fas fa-truck"></i> {{ item.proveedorNombre }}
+                </span>
+                <ng-template #sinProveedor>
+                  <span class="empty-value">—</span>
+                </ng-template>
+              </td>
+              <td class="actions-cell">
+                <a [routerLink]="['/stock', item.productoId, 'entrada']" class="btn-icon" title="Registrar entrada">
+                  <i class="fas fa-arrow-down"></i>
+                </a>
+                <a [routerLink]="['/stock', item.productoId, 'movimientos']" class="btn-icon" title="Ver historial">
+                  <i class="fas fa-history"></i>
+                </a>
+                <a [routerLink]="['/productos', item.productoId]" class="btn-icon" title="Ver producto">
+                  <i class="fas fa-eye"></i>
+                </a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <ng-template #sinAlertas>
+      <div class="empty-state">
+        <i class="fas fa-check-circle"></i>
+        <p>No hay productos por debajo del stock mínimo</p>
+        <p class="hint">Todos los productos tienen stock suficiente</p>
+        <a routerLink="/stock" class="btn-primary">
+          <i class="fas fa-arrow-left"></i> Volver al stock
+        </a>
+      </div>
+    </ng-template>
+
+    <ng-template #cargando>
+      <div class="loading-state">
+        <i class="fas fa-spinner fa-spin"></i>
+        <p>Cargando alertas de stock...</p>
+      </div>
+    </ng-template>
+  </div>
+</div>

@@ -1,0 +1,106 @@
+<div class="main-glass-workspace">
+  <div class="form-shell">
+    <header class="topbar">
+      <div>
+        <h1>{{ modoEdicion ? 'EDITAR CLIENTE' : 'NUEVO CLIENTE' }}</h1>
+        <p>{{ modoEdicion ? 'Modificar información del cliente' : 'Añadir nuevo cliente al sistema' }}</p>
+      </div>
+      <div class="actions">
+        <button type="button" class="btn-secondary" (click)="cancelar()">
+          <i class="fas fa-times"></i> Cancelar
+        </button>
+      </div>
+    </header>
+
+    <form [formGroup]="form" (ngSubmit)="guardar()" class="client-form">
+      <div class="form-grid">
+        <!-- Columna izquierda -->
+        <div class="form-column">
+          <div class="form-group">
+            <label class="form-label required">Nombre</label>
+            <input formControlName="nombre" maxlength="100" class="form-control" 
+                   [class.is-invalid]="campoInvalido('nombre')" placeholder="Ej: Juan" />
+            <small class="error" *ngIf="campoInvalido('nombre') && campo('nombre')?.errors?.['required']">
+              <i class="fas fa-exclamation-circle"></i> El nombre es obligatorio
+            </small>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Apellidos</label>
+            <input formControlName="apellidos" maxlength="100" class="form-control" 
+                   placeholder="Ej: Pérez García" />
+            <small class="hint"><i class="fas fa-info-circle"></i> Opcional</small>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label required">Teléfono</label>
+            <input formControlName="telefono" maxlength="20" class="form-control" 
+                   [class.is-invalid]="campoInvalido('telefono')" placeholder="Ej: 612345678" />
+            <small class="error" *ngIf="campoInvalido('telefono') && campo('telefono')?.errors?.['required']">
+              <i class="fas fa-exclamation-circle"></i> El teléfono es obligatorio
+            </small>
+            <small class="hint" *ngIf="!campoInvalido('telefono')">
+              <i class="fas fa-info-circle"></i> Incluir código de país si es necesario
+            </small>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <input formControlName="email" type="email" maxlength="150" class="form-control" 
+                   [class.is-invalid]="campoInvalido('email')" placeholder="cliente@ejemplo.com" />
+            <small class="error" *ngIf="campoInvalido('email') && campo('email')?.errors?.['email']">
+              <i class="fas fa-exclamation-circle"></i> Email inválido
+            </small>
+            <small class="hint" *ngIf="!campoInvalido('email')">
+              <i class="fas fa-info-circle"></i> Opcional pero recomendado
+            </small>
+          </div>
+        </div>
+
+        <!-- Columna derecha -->
+        <div class="form-column">
+          <div class="form-group">
+            <label class="form-label">NIF / CIF / NIE</label>
+            <input formControlName="nif" maxlength="20" class="form-control" 
+                   placeholder="Ej: 12345678A" />
+            <small class="hint"><i class="fas fa-id-card"></i> Identificador fiscal (opcional)</small>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Dirección</label>
+            <input formControlName="direccion" maxlength="255" class="form-control" 
+                   placeholder="Calle, número, piso..." />
+            <small class="hint"><i class="fas fa-map-marker-alt"></i> Dirección completa (opcional)</small>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Ciudad</label>
+            <input formControlName="ciudad" maxlength="100" class="form-control" 
+                   placeholder="Ej: Madrid, Barcelona..." />
+            <small class="hint"><i class="fas fa-city"></i> Ciudad de residencia (opcional)</small>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Notas</label>
+            <textarea formControlName="notas" rows="4" class="form-control" 
+                      placeholder="Información adicional sobre el cliente..."></textarea>
+            <small class="hint"><i class="fas fa-sticky-note"></i> Notas internas (opcional)</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" [disabled]="form.invalid || guardando" class="btn-primary">
+          <i class="fas fa-save"></i> {{ guardando ? 'Guardando...' : 'Guardar cliente' }}
+        </button>
+        <button type="button" (click)="cancelar()" class="btn-secondary">
+          <i class="fas fa-arrow-left"></i> Volver
+        </button>
+      </div>
+
+      <div *ngIf="errorGeneral" class="alert alert-error">
+        <i class="fas fa-exclamation-triangle"></i> {{ errorGeneral }}
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,108 @@
+<section class="login-shell">
+  <div class="login-branding-zone">
+    <div class="brand-footer-block">
+      <img src="/assets/logo.png" alt="Algedro Logo" class="brand-footer-logo">
+      <h2 class="brand-footer-text">ALGEDRO S.L.</h2>
+    </div>
+  </div>
+  
+  <div class="login-panel-zone">
+    <div class="login-panel">
+      <p class="brand">Algedro S.L.</p>
+      <h1>ACCESO AL SISTEMA</h1>
+
+      <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+        <div class="field-group">
+          <label for="username">Usuario</label>
+          <input type="text" id="username" formControlName="username" autocomplete="username"
+            placeholder="Introduce tu usuario" class="form-input"
+            [class.invalid]="form.get('username')?.invalid && form.get('username')?.touched">
+        </div>
+
+        <div class="field-group">
+          <div class="password-header">
+            <label for="password">Contraseña</label>
+            <a href="#" class="forgot-link" (click)="forgotPassword($event)">¿Olvidaste tu contraseña?</a>
+          </div>
+          <div class="password-wrapper">
+            <input [type]="showPassword ? 'text' : 'password'" id="password" formControlName="password"
+              autocomplete="current-password" placeholder="Introduce tu contraseña" class="form-input"
+              [class.invalid]="form.get('password')?.invalid && form.get('password')?.touched">
+            <button type="button" class="toggle-password" (click)="togglePasswordVisibility()"
+              [attr.aria-label]="showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'"
+              [title]="showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'">
+              <svg *ngIf="!showPassword" class="eye-icon" viewBox="0 0 24 24" width="20" height="20" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                <circle cx="12" cy="12" r="3" />
+              </svg>
+              <svg *ngIf="showPassword" class="eye-icon" viewBox="0 0 24 24" width="20" height="20" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path
+                  d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
+                <line x1="1" y1="1" x2="23" y2="23" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <label class="checkbox-label">
+          <input type="checkbox" formControlName="rememberMe">
+          <span class="checkbox-text">Mantener sesión iniciada</span>
+        </label>
+
+        <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+
+        <button type="submit" class="submit-btn" [disabled]="isSubmitting">
+          {{ isSubmitting ? 'Accediendo...' : 'SING IN' }}
+        </button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- Modal informativo de recuperación de contraseña -->
+<div class="modal-overlay" *ngIf="showForgotPasswordModal" (click)="closeForgotPasswordModal()">
+  <div class="modal-container" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <div class="modal-header-icon">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+        </svg>
+      </div>
+      <h3>Recuperar contraseña</h3>
+      <button class="modal-close" (click)="closeForgotPasswordModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-info-icon">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--lime)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="8" x2="12" y2="12"></line>
+          <line x1="12" y1="16" x2="12.01" y2="16"></line>
+        </svg>
+      </div>
+      
+      <p class="modal-message">
+        Para restablecer tu contraseña, por favor contacta con el administrador del sistema.
+      </p>
+      
+      <div class="modal-contact-card">
+        <div class="contact-email">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+            <polyline points="22,6 12,13 2,6"></polyline>
+          </svg>
+          <a href="mailto:administracion&#64;algedro.com" class="email-link">administracion&#64;algedro.com</a>
+        </div>
+      </div>
+      
+      <p class="modal-note">
+        Un administrador revisará tu solicitud y te ayudará a restablecer tu acceso.
+      </p>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="modal-btn close-btn" (click)="closeForgotPasswordModal()">Entendido</button>
+    </div>
+  </div>
+</div>

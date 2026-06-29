@@ -1,0 +1,179 @@
+<aside class="sidebar-navigation">
+  <a routerLink="/" routerLinkActive="nav-active" class="sidebar-brand-link">
+    <div class="sidebar-brand">
+      <img src="/assets/logo.png" alt="Algedro Logo" class="sidebar-logo" />
+      <span>ALGEDRO</span>
+    </div>
+  </a>
+
+  <nav class="nav-menu">
+    <a routerLink="/ventas" routerLinkActive="nav-active" class="nav-item">
+      <svg
+        class="nav-icon"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <line x1="18" y1="20" x2="18" y2="10"></line>
+        <line x1="12" y1="20" x2="12" y2="4"></line>
+        <line x1="6" y1="20" x2="6" y2="14"></line>
+      </svg>
+      <span>Ventas</span>
+    </a>
+    <a routerLink="/compras" routerLinkActive="nav-active" class="nav-item">
+      <svg
+        class="nav-icon"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <circle cx="9" cy="21" r="1"></circle>
+        <circle cx="20" cy="21" r="1"></circle>
+        <path
+          d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"
+        ></path>
+      </svg>
+      <span>Compras</span>
+    </a>
+    <a routerLink="/productos" routerLinkActive="nav-active" class="nav-item">
+      <svg
+        class="nav-icon"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <path
+          d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"
+        ></path>
+      </svg>
+      <span>Productos</span>
+    </a>
+    <a routerLink="/categorias" routerLinkActive="nav-active" class="nav-item">
+      <svg
+        class="nav-icon"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <rect x="3" y="3" width="7" height="7" rx="1"></rect>
+        <rect x="14" y="3" width="7" height="7" rx="1"></rect>
+        <rect x="3" y="14" width="7" height="7" rx="1"></rect>
+        <rect x="14" y="14" width="7" height="7" rx="1"></rect>
+      </svg>
+      <span>Categorías</span>
+    </a>
+    <a routerLink="/clientes" routerLinkActive="nav-active" class="nav-item">
+      <svg
+        class="nav-icon"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+        <circle cx="9" cy="7" r="4"></circle>
+        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+      </svg>
+      <span>Clientes</span>
+    </a>
+    <a routerLink="/proveedores" routerLinkActive="nav-active" class="nav-item">
+      <svg
+        class="nav-icon"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+        <circle cx="12" cy="7" r="4"></circle>
+      </svg>
+      <span>Proveedores</span>
+    </a>
+    <a
+      routerLink="/empleados"
+      routerLinkActive="nav-active"
+      class="nav-item"
+      *ngIf="authService.isAdmin()"
+    >
+      <svg
+        class="nav-icon"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+        <circle cx="9" cy="7" r="4"></circle>
+        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+      </svg>
+      <span>Empleados</span>
+    </a>
+    <!-- Historial - Icono de lista/historial -->
+    <a
+      routerLink="/ventas/historial"
+      routerLinkActive="nav-active"
+      class="nav-item"
+    >
+      <svg
+        class="nav-icon"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <path d="M3 6h18"></path>
+        <path d="M3 12h18"></path>
+        <path d="M3 18h18"></path>
+      </svg>
+      <span>Historial</span>
+    </a>
+    <a routerLink="/stock" routerLinkActive="nav-active" class="nav-item">
+      <svg
+        class="nav-icon"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <polyline points="21 8 21 21 3 21 3 8"></polyline>
+        <rect x="1" y="3" width="22" height="5"></rect>
+        <line x1="10" y1="12" x2="14" y2="12"></line>
+      </svg>
+      <span>Stock</span>
+    </a>
+    <a routerLink="/operaciones" routerLinkActive="nav-active" class="nav-item">
+      <svg
+        class="nav-icon"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <circle cx="12" cy="12" r="3"></circle>
+        <path
+          d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"
+        ></path>
+      </svg>
+      <span>Operaciones</span>
+    </a>
+  </nav>
+
+  <div class="sidebar-spacer"></div>
+
+  <!-- Bloque de usuario al fondo -->
+  <div class="sidebar-user">
+    <div class="user-avatar">
+      {{ authService.getUsername()?.charAt(0)?.toUpperCase() }}
+    </div>
+    <div class="user-info">
+      <span class="user-name">{{ authService.getUsername() }}</span>
+      <span class="user-role">{{ authService.getRole() }}</span>
+    </div>
+  </div>
+</aside>

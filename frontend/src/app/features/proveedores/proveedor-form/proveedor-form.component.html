@@ -1,0 +1,109 @@
+<div class="main-glass-workspace">
+  <div class="form-shell">
+    <header class="topbar">
+      <div>
+        <h1>{{ modoEdicion ? 'EDITAR PROVEEDOR' : 'NUEVO PROVEEDOR' }}</h1>
+        <p>{{ modoEdicion ? 'Modificar información del proveedor' : 'Añadir nuevo proveedor al sistema' }}</p>
+      </div>
+      <div class="actions">
+        <button type="button" class="btn-secondary" (click)="cancelar()">
+          <i class="fas fa-times"></i> Cancelar
+        </button>
+      </div>
+    </header>
+
+    <form [formGroup]="form" (ngSubmit)="guardar()" class="proveedor-form">
+      <div class="form-grid">
+        <!-- Columna izquierda -->
+        <div class="form-column">
+          <div class="form-group">
+            <label class="form-label required">Nombre / Razón social</label>
+            <input formControlName="nombre" maxlength="150" class="form-control" 
+                   [class.is-invalid]="campoInvalido('nombre')" 
+                   placeholder="Ej: Proveedores S.A." />
+            <small class="error" *ngIf="campoInvalido('nombre') && campo('nombre')?.errors?.['required']">
+              <i class="fas fa-exclamation-circle"></i> El nombre es obligatorio
+            </small>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">NIF / CIF</label>
+            <input formControlName="nif" maxlength="20" class="form-control" 
+                   [class.is-invalid]="errorServidor === 'nif'"
+                   placeholder="Ej: B12345678" />
+            <small class="error" *ngIf="errorServidor === 'nif'">
+              <i class="fas fa-exclamation-circle"></i> Este NIF/CIF ya está registrado
+            </small>
+            <small class="hint" *ngIf="errorServidor !== 'nif'">
+              <i class="fas fa-id-card"></i> Identificador fiscal del proveedor
+            </small>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Persona de contacto</label>
+            <input formControlName="contactoNombre" maxlength="100" class="form-control" 
+                   placeholder="Ej: Juan Pérez" />
+            <small class="hint"><i class="fas fa-user-tie"></i> Persona de referencia</small>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Teléfono</label>
+            <input formControlName="telefono" maxlength="20" class="form-control" 
+                   placeholder="Ej: +34 912 345 678" />
+            <small class="hint"><i class="fas fa-phone"></i> Teléfono de contacto</small>
+          </div>
+        </div>
+
+        <!-- Columna derecha -->
+        <div class="form-column">
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <input formControlName="email" type="email" class="form-control" 
+                   [class.is-invalid]="campoInvalido('email')"
+                   placeholder="proveedor@empresa.com" />
+            <small class="error" *ngIf="campoInvalido('email') && campo('email')?.errors?.['email']">
+              <i class="fas fa-exclamation-circle"></i> Email inválido
+            </small>
+            <small class="hint" *ngIf="!campoInvalido('email')">
+              <i class="fas fa-envelope"></i> Correo electrónico de contacto
+            </small>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Dirección</label>
+            <input formControlName="direccion" maxlength="255" class="form-control" 
+                   placeholder="Calle, número, piso..." />
+            <small class="hint"><i class="fas fa-map-marker-alt"></i> Dirección completa</small>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Ciudad</label>
+            <input formControlName="ciudad" maxlength="100" class="form-control" 
+                   placeholder="Ej: Madrid, Barcelona..." />
+            <small class="hint"><i class="fas fa-city"></i> Ciudad de ubicación</small>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Notas</label>
+            <textarea formControlName="notas" rows="4" class="form-control" 
+                      placeholder="Información adicional sobre el proveedor..."></textarea>
+            <small class="hint"><i class="fas fa-sticky-note"></i> Observaciones internas</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" [disabled]="form.invalid || guardando" class="btn-primary">
+          <i class="fas fa-save"></i> {{ guardando ? 'Guardando...' : 'Guardar proveedor' }}
+        </button>
+        <button type="button" (click)="cancelar()" class="btn-secondary">
+          <i class="fas fa-arrow-left"></i> Volver
+        </button>
+      </div>
+
+      <div *ngIf="errorGeneral" class="alert alert-error">
+        <i class="fas fa-exclamation-triangle"></i> {{ errorGeneral }}
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,87 @@
+<div class="main-glass-workspace">
+
+  <div class="workspace-header">
+    <p class="eyebrow">Panel de control unificado</p>
+    <h1>ALGEDRO S.L.</h1>
+    <p class="hero-copy">Gestión centralizada del ecosistema empresarial y analíticas en tiempo real.</p>
+  </div>
+
+  <div class="analytics-layout">
+
+    <div class="chart-container">
+      <div class="chart-info">
+        <h3>Evolución de Ventas</h3>
+        <span class="live-badge">En vivo</span>
+      </div>
+      <div class="vector-chart-wrapper">
+        <svg class="line-chart-svg" viewBox="0 0 500 150" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="chart-glow" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="var(--lime)" stop-opacity="0.25" />
+              <stop offset="100%" stop-color="var(--lime)" stop-opacity="0" />
+            </linearGradient>
+          </defs>
+          <path [attr.d]="chartAreaPath" fill="url(#chart-glow)" />
+          <path [attr.d]="chartPath" fill="none" stroke="var(--lime)" stroke-width="3"
+            stroke-linecap="round" stroke-linejoin="round" class="glowing-path" />
+        </svg>
+      </div>
+    </div>
+
+    <div class="metrics-large-grid">
+
+      <!-- Solo visible para admin -->
+      <div class="large-metric-card" *ngIf="authService.isAdmin()">
+        <div class="metric-top">
+          <span class="metric-title">Alertas Activas</span>
+          <span class="trend-indicator text-orange" [class.alert-active]="alertasStock > 0">Stock</span>
+        </div>
+        <div class="metric-value" [class.text-orange]="alertasStock > 0">{{ alertasStock }}</div>
+        <p class="metric-sub">Productos con stock mínimo crítico</p>
+      </div>
+
+      <!-- Visible para todos -->
+      <div class="large-metric-card">
+        <div class="metric-top">
+          <span class="metric-title">Ticket Promedio</span>
+          <span class="trend-indicator text-blue">Auditoría</span>
+        </div>
+        <div class="metric-value">{{ ticketPromedio | currency:'EUR':'symbol':'1.2-2' }}</div>
+        <p class="metric-sub">Ratio medio por transacción</p>
+      </div>
+
+      <!-- Visible para todos -->
+      <div class="large-metric-card">
+        <div class="metric-top">
+          <span class="metric-title">Catálogo</span>
+          <span class="trend-indicator text-lime">Índice</span>
+        </div>
+        <div class="metric-value">{{ totalProductos }}</div>
+        <p class="metric-sub">Productos registrados en sistema</p>
+      </div>
+
+      <!-- Visible para todos -->
+      <div class="large-metric-card cta-highlight">
+        <div class="metric-top">
+          <span class="metric-title">Ventas del Mes</span>
+          <span class="trend-indicator glow-text">Acumulado</span>
+        </div>
+        <div class="metric-value text-lime">{{ ventasMes | currency:'EUR':'symbol':'1.0-0' }}</div>
+        <p class="metric-sub">Rendimiento mensual de facturación</p>
+      </div>
+
+      <!-- Solo visible para admin - Empleados Activos -->
+      <div class="large-metric-card" *ngIf="authService.isAdmin()">
+        <div class="metric-top">
+          <span class="metric-title">Empleados Activos</span>
+          <span class="trend-indicator text-blue">RRHH</span>
+        </div>
+        <div class="metric-value">{{ empleadosActivos }}</div>
+        <p class="metric-sub">Personal en activo</p>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

@@ -1,0 +1,300 @@
+/* ESTRUCTURA GENERAL DEL DASHBOARD DIVIDIDO */
+.dashboard-shell {
+  display: grid;
+  grid-template-columns: 260px 1fr; /* Barra de navegación fija a la izquierda y panel de trabajo fluido */
+  gap: 0;
+  box-sizing: border-box;
+}
+
+/* BARRA LATERAL IZQUIERDA MINIMALISTA */
+.sidebar-navigation {
+  background: rgba(0, 0, 0, 0.2);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.20);
+  border-radius: 24px;
+  backdrop-filter: blur(32px);
+  -webkit-backdrop-filter: blur(32px);
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.35);
+  padding: 40px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.sidebar-logo {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+
+.sidebar-brand span {
+  font-size: 1.15rem;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  color: var(--text);
+}
+
+/* Menú de navegación lateral */
+.nav-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 18px;
+  color: var(--muted);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.98rem;
+  border-radius: 12px;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Iconos monocromáticos por defecto que pasan a verde lima al activarse */
+.nav-icon {
+  width: 20px;
+  height: 20px;
+  opacity: 0.6;
+  transition: all 0.25s ease;
+}
+
+.nav-item:hover {
+  color: var(--lime);
+  background: rgba(198, 241, 53, 0.05);
+}
+
+.nav-item:hover .nav-icon {
+  opacity: 1;
+  color: var(--lime);
+  transform: translateX(2px);
+}
+
+/* EL GRAN CONTENEDOR TRANSLÚCIDO UNIFICADO (Estilo Cristal Login) */
+.main-glass-workspace {
+  margin: 32px;
+  padding: 48px;
+  /* Fondo ultra-transparente que se fusiona con el logotipo esmerilado de fondo */
+  background: rgba(255, 255, 255, 0.06); 
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 24px;
+  backdrop-filter: blur(32px);
+  -webkit-backdrop-filter: blur(32px);
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.35);
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  box-sizing: border-box;
+}
+
+/* Textos de cabecera */
+.workspace-header .eyebrow {
+  margin: 0 0 6px;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--lime);
+  font-weight: 800;
+}
+
+.workspace-header h1 {
+  margin: 0 0 12px;
+  font-size: 2.75rem;
+  font-weight: 900;
+  color: var(--text);
+  letter-spacing: -0.02em;
+}
+
+.hero-copy {
+  margin: 0;
+  color: var(--muted);
+  font-size: 1.1rem;
+  max-width: 650px;
+  line-height: 1.5;
+}
+
+/* Layout de analíticas internas */
+.analytics-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 32px;
+}
+
+/* SECCIÓN DE LA GRÁFICA LINEAL LIMA */
+.chart-container {
+  background: rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 16px;
+  padding: 24px;
+}
+
+.chart-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.chart-info h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: var(--text);
+  font-weight: 700;
+}
+
+.live-badge {
+  background: rgba(198, 241, 53, 0.1);
+  color: var(--lime);
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 20px;
+  border: 1px solid rgba(198, 241, 53, 0.2);
+  letter-spacing: 0.05em;
+}
+
+.vector-chart-wrapper {
+  width: 100%;
+  height: 160px;
+  padding-top: 20px;
+}
+
+.line-chart-svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+/* Efecto Neón para la línea de tendencia del ERP */
+.glowing-path {
+  filter: drop-shadow(0px 4px 10px rgba(198, 241, 53, 0.5));
+}
+
+/* CUADRÍCULA DE TARJETAS EXPANDIDAS (Métricas con amplio padding) */
+.metrics-large-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.alert-active {
+  background: rgba(251, 146, 60, 0.12) !important;
+  color: var(--orange) !important;
+  box-shadow: 0 0 12px rgba(251, 146, 60, 0.2);
+}
+
+.large-metric-card {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.20);
+  border-radius: 16px;
+  padding: 28px; /* Amplio padding para dejar respirar los datos */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 140px;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.large-metric-card .metric-value:not(.text-orange) {
+  color: var(--muted); /* Se muestra atenuado si es 0 */
+}
+
+.large-metric-card:hover {
+  border-color: rgba(255, 255, 255, 0.20);
+  transform: translateY(-2px);
+}
+
+.metric-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.metric-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--muted);
+  letter-spacing: 0.04em;
+}
+
+.trend-indicator {
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.trend-indicator.up {
+  color: var(--lime);
+  background: rgba(198, 241, 53, 0.08);
+}
+
+.metric-value {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--text);
+  margin: 14px 0 4px;
+  letter-spacing: -0.02em;
+}
+
+.metric-sub {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--subtle);
+}
+
+/* Colores de Alerta y Acentuaciones */
+.text-orange { color: var(--orange); }
+.text-lime { color: var(--lime); }
+.text-blue { color: #60a5fa; }
+
+/* Tarjeta Destacada de Ventas con degradado y glow lineal */
+.cta-highlight {
+  border-left: 3px solid var(--lime);
+  background: linear-gradient(135deg, rgba(198, 241, 53, 0.03), transparent);
+}
+
+.cta-highlight:hover {
+  border-left-color: var(--lime);
+  background: linear-gradient(135deg, rgba(198, 241, 53, 0.06), rgba(255, 255, 255, 0.01));
+}
+
+.glow-text {
+  color: var(--lime);
+  text-shadow: 0 0 10px rgba(198, 241, 53, 0.3);
+}
+
+/* RESPONSIVIDAD PARA TABLETS O PANTALLAS REDUCIDAS */
+@media (max-width: 1100px) {
+  .metrics-large-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 850px) {
+  .dashboard-shell {
+    grid-template-columns: 1fr;
+  }
+  .sidebar-navigation {
+    display: none; /* En móviles se escondería para usar un menú colapsable */
+  }
+  .main-glass-workspace {
+    margin: 16px;
+    padding: 24px;
+  }
+  .metrics-large-grid {
+    grid-template-columns: 1fr;
+  }
+}

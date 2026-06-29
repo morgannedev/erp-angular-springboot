@@ -1,0 +1,152 @@
+<div class="main-glass-workspace">
+  <div class="clients-shell">
+    <header class="topbar">
+      <div>
+        <h1>CLIENTES</h1>
+        <p>Gestión de clientes y contactos</p>
+      </div>
+      <div class="actions">
+        <button type="button" class="btn-secondary" (click)="mostrarRapido = true">
+          <i class="fas fa-bolt"></i> Cliente rápido
+        </button>
+        <button *ngIf="esAdmin" type="button" class="btn-secondary" (click)="exportarCsv()">
+          <i class="fas fa-file-csv"></i> Exportar CSV
+        </button>
+        <a routerLink="nuevo" class="btn-primary" *ngIf="esAdmin">
+          <i class="fas fa-plus"></i> Nuevo cliente
+        </a>
+      </div>
+    </header>
+
+    <!-- Filtros -->
+    <div class="filters-section">
+      <div class="filters-grid">
+        <div class="search-wrapper">
+          <i class="fas fa-search search-icon"></i>
+          <input
+            type="search"
+            [formControl]="busquedaCtrl"
+            placeholder="Buscar por nombre, teléfono o email..."
+            class="search-input"
+            (input)="onBuscar($event)"
+          />
+        </div>
+        <div class="filter-group" *ngIf="esAdmin">
+          <select [(ngModel)]="filtroActivo" (change)="aplicarFiltros()" class="filter-select">
+            <option [value]="null">Todos los clientes</option>
+            <option [value]="true">Solo activos</option>
+            <option [value]="false">Solo inactivos</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="table-container" *ngIf="page; else cargando">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th (click)="ordenarPor('nombre')" class="sortable">
+                Cliente
+                <i *ngIf="sortField === 'nombre'" [class]="sortDir === 'asc' ? 'fas fa-arrow-up' : 'fas fa-arrow-down'"></i>
+              </th>
+              <th (click)="ordenarPor('telefono')" class="sortable">
+                Teléfono
+                <i *ngIf="sortField === 'telefono'" [class]="sortDir === 'asc' ? 'fas fa-arrow-up' : 'fas fa-arrow-down'"></i>
+              </th>
+              <th (click)="ordenarPor('email')" class="sortable">
+                Email
+                <i *ngIf="sortField === 'email'" [class]="sortDir === 'asc' ? 'fas fa-arrow-up' : 'fas fa-arrow-down'"></i>
+              </th>
+              <th *ngIf="esAdmin">NIF/CIF</th>
+              <th (click)="ordenarPor('activo')" class="sortable">
+                Estado
+                <i *ngIf="sortField === 'activo'" [class]="sortDir === 'asc' ? 'fas fa-arrow-up' : 'fas fa-arrow-down'"></i>
+              </th>
+              <th *ngIf="esAdmin">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let c of page.contenido" class="clickable-row" (click)="verDetalle(c.id)">
+              <td class="client-cell">
+                <i class="fas fa-user-circle client-icon"></i>
+                <div class="client-info">
+                  <span class="client-name">{{ c.nombre }} {{ c.apellidos ?? '' }}</span>
+                  <small class="client-id" *ngIf="esAdmin">ID: {{ c.id }}</small>
+                </div>
+              </td>
+              <td>
+                <div class="contact-cell">
+                  <i class="fas fa-phone-alt"></i>
+                  <span>{{ c.telefono }}</span>
+                </div>
+              </td>
+              <td>
+                <div class="contact-cell" *ngIf="c.email; else noEmail">
+                  <i class="fas fa-envelope"></i>
+                  <span>{{ c.email }}</span>
+                </div>
+                <ng-template #noEmail>
+                  <span class="empty-value">-</span>
+                </ng-template>
+              </td>
+              <td *ngIf="esAdmin">
+                <span class="nif-value">{{ c.nif ?? '-' }}</span>
+              </td>
+              <td>
+                <span [class]="c.activo ? 'badge badge-ok' : 'badge badge-off'">
+                  {{ c.activo ? 'ACTIVO' : 'INACTIVO' }}
+                </span>
+              </td>
+              <td *ngIf="esAdmin" class="actions-cell" (click)="$event.stopPropagation()">
+                <a [routerLink]="[c.id, 'editar']" class="btn-icon" title="Editar">
+                  <i class="fas fa-edit"></i>
+                </a>
+                <button (click)="toggleEstado(c.id, c.activo)" class="btn-icon" 
+                  [class.danger]="c.activo" [title]="c.activo ? 'Desactivar' : 'Activar'">
+                  <i [class]="c.activo ? 'fas fa-toggle-off' : 'fas fa-toggle-on'"></i>
+                </button>
+                <button (click)="eliminar(c)" class="btn-icon danger" title="Eliminar">
+                  <i class="fas fa-trash-alt"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="pagination" *ngIf="page && page.totalPaginas > 1">
+      <button class="btn-pagination" [disabled]="paginaActual === 0" (click)="irA(paginaActual - 1)">
+        <i class="fas fa-chevron-left"></i> Anterior
+      </button>
+      <span class="page-info">{{ paginaActual + 1 }} / {{ page.totalPaginas }}</span>
+      <button class="btn-pagination" [disabled]="paginaActual >= page.totalPaginas - 1" (click)="irA(paginaActual + 1)">
+        Siguiente <i class="fas fa-chevron-right"></i>
+      </button>
+    </div>
+
+    <ng-template #cargando>
+      <div class="loading-state">
+        <i class="fas fa-spinner fa-spin"></i>
+        <p>Cargando clientes...</p>
+      </div>
+    </ng-template>
+  </div>
+</div>
+
+<!-- Modal de creación rápida -->
+<div class="modal-overlay" *ngIf="mostrarRapido" (click)="mostrarRapido = false">
+  <div class="modal-panel" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3><i class="fas fa-user-plus"></i> Nuevo cliente rápido</h3>
+      <button type="button" class="close-modal" (click)="mostrarRapido = false">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <app-cliente-quick-create
+      (creado)="onCreado()"
+      (cancelar)="mostrarRapido = false"
+    />
+  </div>
+</div>

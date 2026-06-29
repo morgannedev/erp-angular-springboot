@@ -1,0 +1,202 @@
+<div class="main-glass-workspace">
+  <div class="form-shell">
+    <header class="topbar">
+      <div>
+        <h1>{{ empleadoId ? 'EDITAR EMPLEADO' : 'NUEVO EMPLEADO' }}</h1>
+        <p>{{ empleadoId ? 'Modificar información del empleado' : 'Añadir nuevo empleado al sistema' }}</p>
+      </div>
+      <div class="actions">
+        <button type="button" class="btn-secondary" (click)="cancelar()">
+          <i class="fas fa-times"></i> Cancelar
+        </button>
+      </div>
+    </header>
+
+    <form [formGroup]="form" (ngSubmit)="guardar()" class="empleado-form">
+      <div class="form-grid">
+        <!-- Columna izquierda - Cuenta y Datos personales -->
+        <div class="form-column">
+          <!-- Sección Cuenta -->
+          <div class="form-section">
+            <div class="section-header">
+              <i class="fas fa-user-circle section-icon"></i>
+              <h3>Cuenta de usuario</h3>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label required">Usuario</label>
+              <input formControlName="username" maxlength="50" class="form-control" 
+                     [class.is-invalid]="campoInvalido('username')" 
+                     [readonly]="empleadoId !== null"
+                     placeholder="nombre_usuario" />
+              <small class="error" *ngIf="campoInvalido('username') && campo('username')?.errors?.['required']">
+                <i class="fas fa-exclamation-circle"></i> El usuario es obligatorio
+              </small>
+              <small class="error" *ngIf="campoInvalido('username') && campo('username')?.errors?.['minlength']">
+                <i class="fas fa-exclamation-circle"></i> Mínimo 4 caracteres
+              </small>
+              <small class="hint" *ngIf="empleadoId">El usuario no se puede modificar</small>
+            </div>
+
+            <div class="form-group" *ngIf="!empleadoId">
+              <label class="form-label required">Contraseña</label>
+              <input formControlName="password" type="password" maxlength="100" class="form-control" 
+                     [class.is-invalid]="campoInvalido('password')"
+                     placeholder="••••••••" />
+              <small class="error" *ngIf="campoInvalido('password') && campo('password')?.errors?.['required']">
+                <i class="fas fa-exclamation-circle"></i> La contraseña es obligatoria
+              </small>
+              <small class="hint" *ngIf="!campoInvalido('password')">
+                <i class="fas fa-info-circle"></i> Mínimo 6 caracteres
+              </small>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label required">Rol</label>
+              <select formControlName="rol" class="form-control" [class.is-invalid]="campoInvalido('rol')">
+                <option value="EMPLEADO">EMPLEADO</option>
+                <option value="ADMIN">ADMINISTRADOR</option>
+              </select>
+              <small class="hint">
+                <i class="fas fa-shield-alt"></i> Los administradores tienen acceso total
+              </small>
+            </div>
+          </div>
+
+          <!-- Sección Datos Personales -->
+          <div class="form-section">
+            <div class="section-header">
+              <i class="fas fa-id-card section-icon"></i>
+              <h3>Datos personales</h3>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group half">
+                <label class="form-label required">Nombre</label>
+                <input formControlName="nombre" maxlength="100" class="form-control" 
+                       [class.is-invalid]="campoInvalido('nombre')"
+                       placeholder="Ej: Juan" />
+                <small class="error" *ngIf="campoInvalido('nombre') && campo('nombre')?.errors?.['required']">
+                  <i class="fas fa-exclamation-circle"></i> Obligatorio
+                </small>
+              </div>
+
+              <div class="form-group half">
+                <label class="form-label required">Apellidos</label>
+                <input formControlName="apellidos" maxlength="150" class="form-control" 
+                       [class.is-invalid]="campoInvalido('apellidos')"
+                       placeholder="Ej: Pérez García" />
+                <small class="error" *ngIf="campoInvalido('apellidos') && campo('apellidos')?.errors?.['required']">
+                  <i class="fas fa-exclamation-circle"></i> Obligatorio
+                </small>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group half">
+                <label class="form-label">DNI / NIE</label>
+                <input formControlName="dni" maxlength="20" class="form-control" 
+                       placeholder="00000000A" />
+                <small class="hint"><i class="fas fa-id-card"></i> Opcional</small>
+              </div>
+
+              <div class="form-group half">
+                <label class="form-label">Teléfono</label>
+                <input formControlName="telefono" maxlength="20" class="form-control" 
+                       placeholder="+34 600 000 000" />
+                <small class="hint"><i class="fas fa-phone"></i> Opcional</small>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Email</label>
+              <input formControlName="email" type="email" maxlength="150" class="form-control" 
+                     [class.is-invalid]="campoInvalido('email')"
+                     placeholder="correo@empresa.com" />
+              <small class="error" *ngIf="campoInvalido('email') && campo('email')?.errors?.['email']">
+                <i class="fas fa-exclamation-circle"></i> Email inválido
+              </small>
+              <small class="hint"><i class="fas fa-envelope"></i> Correo electrónico de contacto</small>
+            </div>
+          </div>
+        </div>
+
+        <!-- Columna derecha - Datos Laborales -->
+        <div class="form-column">
+          <div class="form-section">
+            <div class="section-header">
+              <i class="fas fa-briefcase section-icon"></i>
+              <h3>Datos laborales</h3>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label required">Cargo</label>
+              <input formControlName="cargo" maxlength="100" class="form-control" 
+                     [class.is-invalid]="campoInvalido('cargo')"
+                     placeholder="Ej: Desarrollador Senior" />
+              <small class="error" *ngIf="campoInvalido('cargo') && campo('cargo')?.errors?.['required']">
+                <i class="fas fa-exclamation-circle"></i> El cargo es obligatorio
+              </small>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group half">
+                <label class="form-label">Salario (€)</label>
+                <input formControlName="salario" type="number" min="0" step="0.01" class="form-control" 
+                       placeholder="0.00" />
+                <small class="hint"><i class="fas fa-euro-sign"></i> Salario bruto anual</small>
+              </div>
+
+              <div class="form-group half">
+                <label class="form-label required">Fecha contratación</label>
+                <input formControlName="fechaContratacion" type="date" class="form-control" 
+                       [class.is-invalid]="campoInvalido('fechaContratacion')" />
+                <small class="error" *ngIf="campoInvalido('fechaContratacion') && campo('fechaContratacion')?.errors?.['required']">
+                  <i class="fas fa-exclamation-circle"></i> Obligatorio
+                </small>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Fecha de baja</label>
+              <input formControlName="fechaBaja" type="date" class="form-control" 
+                     [readonly]="empleadoId !== null" />
+              <small class="hint" *ngIf="!empleadoId">
+                <i class="fas fa-calendar-times"></i> Dejar vacío si está activo
+              </small>
+              <small class="hint" *ngIf="empleadoId">
+                <i class="fas fa-info-circle"></i> Solo se puede modificar en edición
+              </small>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Notas</label>
+              <textarea formControlName="notas" rows="4" class="form-control" 
+                        placeholder="Observaciones adicionales sobre el empleado..."></textarea>
+              <small class="hint"><i class="fas fa-sticky-note"></i> Información interna</small>
+            </div>
+          </div>
+
+          <!-- Info card -->
+          <div class="info-card" *ngIf="form.get('rol')?.value === 'ADMIN'">
+            <i class="fas fa-shield-alt"></i>
+            <span>El usuario <strong>ADMINISTRADOR</strong> tiene acceso total al sistema</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" [disabled]="form.invalid || isSaving" class="btn-primary">
+          <i class="fas fa-save"></i> {{ isSaving ? 'Guardando...' : 'Guardar empleado' }}
+        </button>
+        <button type="button" (click)="cancelar()" class="btn-secondary">
+          <i class="fas fa-arrow-left"></i> Volver
+        </button>
+      </div>
+
+      <div *ngIf="errorMessage" class="alert alert-error">
+        <i class="fas fa-exclamation-triangle"></i> {{ errorMessage }}
+      </div>
+    </form>
+  </div>
+</div>

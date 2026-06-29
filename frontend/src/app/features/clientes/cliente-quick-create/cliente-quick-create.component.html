@@ -1,0 +1,73 @@
+<div class="quick-create-container">
+  <form [formGroup]="form" (ngSubmit)="guardar()" class="quick-form">
+    <div class="form-grid">
+      <div class="form-group full-width">
+        <label class="form-label required">Nombre completo</label>
+        <input formControlName="nombre" maxlength="100" class="form-control" 
+               [class.is-invalid]="campoInvalido('nombre')" 
+               placeholder="Ej: Juan Pérez" />
+        <small class="error" *ngIf="campoInvalido('nombre') && campo('nombre')?.errors?.['required']">
+          <i class="fas fa-exclamation-circle"></i> El nombre es obligatorio
+        </small>
+        <small class="hint" *ngIf="!campoInvalido('nombre')">
+          <i class="fas fa-info-circle"></i> Máximo 100 caracteres
+        </small>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label required">Teléfono</label>
+        <input formControlName="telefono" maxlength="20" class="form-control" 
+               [class.is-invalid]="campoInvalido('telefono')" 
+               placeholder="Ej: 612345678" />
+        <small class="error" *ngIf="campoInvalido('telefono') && campo('telefono')?.errors?.['required']">
+          <i class="fas fa-exclamation-circle"></i> El teléfono es obligatorio
+        </small>
+        <small class="hint" *ngIf="!campoInvalido('telefono')">
+          <i class="fas fa-info-circle"></i> Incluir código de país si es necesario
+        </small>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input formControlName="email" type="email" maxlength="150" class="form-control" 
+               [class.is-invalid]="campoInvalido('email')" 
+               placeholder="cliente@ejemplo.com" />
+        <small class="error" *ngIf="campoInvalido('email') && campo('email')?.errors?.['email']">
+          <i class="fas fa-exclamation-circle"></i> Email inválido
+        </small>
+        <small class="hint" *ngIf="!campoInvalido('email')">
+          <i class="fas fa-info-circle"></i> Opcional pero recomendado
+        </small>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">NIF / CIF / NIE</label>
+        <input formControlName="nif" maxlength="20" class="form-control" 
+               [class.is-invalid]="campoInvalido('nif')" 
+               placeholder="Ej: 12345678A" />
+        <small class="hint">
+          <i class="fas fa-info-circle"></i> Identificador fiscal (opcional)
+        </small>
+      </div>
+    </div>
+
+    <!-- Tarjeta de información opcional -->
+    <div class="info-card" *ngIf="form.get('telefono')?.value && !form.get('email')?.value">
+      <i class="fas fa-info-circle"></i>
+      <span>Recomendamos añadir un <strong>email</strong> para enviar facturas y comunicaciones</span>
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" [disabled]="form.invalid || guardando" class="btn-primary">
+        <i class="fas fa-save"></i> {{ guardando ? 'Guardando...' : 'Crear cliente' }}
+      </button>
+      <button type="button" (click)="cancelar.emit()" class="btn-secondary">
+        <i class="fas fa-times"></i> Cancelar
+      </button>
+    </div>
+
+    <div *ngIf="errorGeneral" class="alert alert-error">
+      <i class="fas fa-exclamation-triangle"></i> {{ errorGeneral }}
+    </div>
+  </form>
+</div>

@@ -1,0 +1,182 @@
+/* ============================================================
+   TOP HEADER — Algedro ERP
+   Header superior limpio: módulo activo + perfil + acciones
+   Estilo glass coherente con sidebar y dashboard
+   ============================================================ */
+
+.top-header {
+  margin: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 0 32px;
+  height: 68px;
+  flex-shrink: 0;
+  background: rgba(0, 0, 0, 0.2);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.20);
+  border-radius: 24px;
+  backdrop-filter: blur(32px);
+  -webkit-backdrop-filter: blur(32px);
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.35);
+  box-sizing: border-box;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+/* ---- TÍTULO DEL MÓDULO ---- */
+.header-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.module-title {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.01em;
+}
+
+/* ---- CONTROLES DERECHA ---- */
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+/* Botón icono (notificaciones, etc.) */
+.header-icon-btn {
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.header-icon-btn svg {
+  width: 17px;
+  height: 17px;
+}
+
+.header-icon-btn:hover {
+  background: rgba(255, 255, 255, 0.10);
+  border-color: rgba(255, 255, 255, 0.18);
+  color: var(--text);
+}
+
+/* Separador vertical */
+.header-divider {
+  width: 1px;
+  height: 28px;
+  background: rgba(255, 255, 255, 0.10);
+  flex-shrink: 0;
+}
+
+/* ---- BLOQUE DE PERFIL ---- */
+.header-profile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.profile-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: rgba(198, 241, 53, 0.12);
+  border: 1px solid rgba(198, 241, 53, 0.25);
+  color: var(--lime);
+  font-size: 0.82rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  letter-spacing: 0.03em;
+}
+
+.profile-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.profile-name {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+.profile-role {
+  font-size: 0.70rem;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* ---- BOTÓN LOGOUT ---- */
+.logout-btn {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  background: rgba(251, 113, 133, 0.08);
+  border: 1px solid rgba(251, 113, 133, 0.22);
+  color: #ffa1b2;
+  padding: 8px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 700;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.logout-btn svg {
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+}
+
+.logout-btn:hover {
+  background: rgba(251, 113, 133, 0.18);
+  border-color: rgba(251, 113, 133, 0.45);
+  color: #ffffff;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 850px) {
+  .top-header {
+    padding: 0 20px;
+  }
+
+  /* Ocultar nombre/rol en pantallas pequeñas, dejar solo avatar */
+  .profile-info {
+    display: none;
+  }
+
+  .logout-btn span {
+    display: none;
+  }
+
+  .logout-btn {
+    padding: 8px 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .header-divider {
+    display: none;
+  }
+}

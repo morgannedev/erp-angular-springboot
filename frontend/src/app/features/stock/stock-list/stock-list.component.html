@@ -1,0 +1,141 @@
+<div class="main-glass-workspace">
+  <div class="stock-shell">
+    <header class="topbar">
+      <div>
+        <h1>GESTIÓN DE STOCK</h1>
+        <p>Control de inventario y niveles de stock</p>
+      </div>
+      <div class="actions">
+        <div class="rol-badge" [class.admin]="esAdmin" [class.empleado]="!esAdmin">
+          <i class="fas" [class.fa-user-shield]="esAdmin" [class.fa-user]="!esAdmin"></i>
+          {{ esAdmin ? 'ADMINISTRADOR' : 'EMPLEADO - Solo lectura' }}
+        </div>
+        <a *ngIf="esAdmin" routerLink="/stock/alertas" class="btn-warning">
+          <i class="fas fa-exclamation-triangle"></i> Ver alertas
+        </a>
+      </div>
+    </header>
+
+    <div class="search-section">
+      <div class="search-wrapper">
+        <i class="fas fa-search search-icon"></i>
+        <input
+          type="search"
+          [(ngModel)]="busqueda"
+          (input)="onBuscar()"
+          placeholder="Buscar por nombre o referencia..."
+          class="search-input"
+        />
+      </div>
+    </div>
+
+    <div class="table-container" *ngIf="page; else cargando">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Referencia</th>
+              <th>Producto</th>
+              <th>Stock Actual</th>
+              <th>Stock Mínimo</th>
+              <th>Stock Máximo</th>
+              <th>Estado</th>
+              <th>Proveedor</th>
+              <th *ngIf="esAdmin">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of page.contenido" [class.en-alerta]="item.enAlerta">
+              <td class="ref-cell">{{ item.referencia }}</td>
+              <td class="name-cell">
+                <strong>{{ item.nombre }}</strong>
+              </td>
+              <td class="stock-cell">
+                <span [class]="item.enAlerta ? 'badge badge-danger' : 'badge badge-success'">
+                  {{ item.stockActual }}
+                </span>
+              </td>
+              <td class="minimo-cell">
+                <ng-container *ngIf="esAdmin; else soloMinimo">
+                  <input
+                    type="number"
+                    [value]="item.stockMinimo"
+                    (change)="actualizarMinimo(item.productoId, $event)"
+                    min="0"
+                    class="stock-input"
+                  />
+                </ng-container>
+                <ng-template #soloMinimo>
+                  <span>{{ item.stockMinimo }}</span>
+                </ng-template>
+              </td>
+              <td class="maximo-cell">
+                <ng-container *ngIf="esAdmin; else soloMaximo">
+                  <input
+                    type="number"
+                    [value]="item.stockMaximo"
+                    (change)="actualizarMaximo(item.productoId, $event)"
+                    min="0"
+                    class="stock-input"
+                  />
+                </ng-container>
+                <ng-template #soloMaximo>
+                  <span>{{ item.stockMaximo }}</span>
+                </ng-template>
+              </td>
+              <td>
+                <span *ngIf="item.enAlerta" class="badge badge-warning">
+                  <i class="fas fa-exclamation-triangle"></i> Por debajo del mínimo
+                </span>
+                <span *ngIf="!item.enAlerta" class="badge badge-success">
+                  <i class="fas fa-check-circle"></i> Stock óptimo
+                </span>
+              </td>
+              <td class="proveedor-cell">
+                <span *ngIf="item.proveedorNombre; else sinProveedor">
+                  <i class="fas fa-truck"></i> {{ item.proveedorNombre }}
+                </span>
+                <ng-template #sinProveedor>
+                  <span class="empty-value">—</span>
+                </ng-template>
+              </td>
+              <td *ngIf="esAdmin" class="actions-cell">
+                <a [routerLink]="['/stock', item.productoId, 'entrada']" class="btn-icon" title="Registrar entrada">
+                  <i class="fas fa-arrow-down"></i>
+                </a>
+                <a [routerLink]="['/stock', item.productoId, 'ajuste']" class="btn-icon" title="Ajuste manual">
+                  <i class="fas fa-edit"></i>
+                </a>
+                <a [routerLink]="['/stock', item.productoId, 'movimientos']" class="btn-icon" title="Ver historial">
+                  <i class="fas fa-history"></i>
+                </a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="pagination" *ngIf="page && page.totalPaginas > 1">
+      <button class="btn-pagination" [disabled]="paginaActual === 0" (click)="irA(paginaActual - 1)">
+        <i class="fas fa-chevron-left"></i> Anterior
+      </button>
+      <span class="page-info">Página {{ paginaActual + 1 }} de {{ page.totalPaginas }}</span>
+      <button class="btn-pagination" [disabled]="paginaActual >= page.totalPaginas - 1" (click)="irA(paginaActual + 1)">
+        Siguiente <i class="fas fa-chevron-right"></i>
+      </button>
+    </div>
+
+    <div *ngIf="page && page.contenido.length === 0" class="empty-state">
+      <i class="fas fa-boxes"></i>
+      <p>No se encontraron productos</p>
+    </div>
+
+    <ng-template #cargando>
+      <div class="loading-state">
+        <i class="fas fa-spinner fa-spin"></i>
+        <p>Cargando stock...</p>
+      </div>
+    </ng-template>
+  </div>
+</div>

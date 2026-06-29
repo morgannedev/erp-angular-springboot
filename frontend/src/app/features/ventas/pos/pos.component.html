@@ -1,0 +1,314 @@
+<div class="main-glass-workspace">
+  <section class="pos-shell">
+    <header class="topbar">
+      <div>
+        <h1>PUNTO DE VENTA</h1>
+        <p>Ventas rápidas y gestión de tickets</p>
+      </div>
+    </header>
+
+    <div class="pos-grid">
+      <!-- Panel izquierdo: Productos y carrito -->
+      <section class="sale-panel">
+        <div class="search-row">
+          <div class="search-wrapper">
+            <input
+              [(ngModel)]="busqueda"
+              (input)="buscarProductos()"
+              placeholder="Buscar producto o EAN..."
+              class="search-input"
+            />
+            <button
+              type="button"
+              class="btn-ean"
+              (click)="buscarBarcode()"
+              title="Buscar por código de barras"
+            >
+              EAN
+            </button>
+          </div>
+        </div>
+
+        <!-- Resultados de búsqueda -->
+        <div class="results" *ngIf="resultados.length">
+          <h3>PRODUCTOS ENCONTRADOS</h3>
+          <div class="products-grid">
+            <button
+              type="button"
+              class="product-card"
+              *ngFor="let producto of resultados"
+              (click)="agregar(producto)"
+            >
+              <span class="product-name">{{ producto.nombre }}</span>
+              <span class="product-price">{{
+                producto.precioVenta | currency: "EUR"
+              }}</span>
+              <span
+                class="product-stock"
+                [class.low-stock]="
+                  producto.stockMinimo !== null &&
+                  producto.stockActual <= producto.stockMinimo
+                "
+              >
+                Stock: {{ producto.stockActual }}
+              </span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Tabla del carrito -->
+        <div class="cart-section">
+          <div class="cart-header">
+            <h3>CARRITO DE VENTA</h3>
+            <button
+              type="button"
+              class="btn-clear"
+              (click)="limpiarCarrito()"
+              *ngIf="lineas.length > 0"
+            >
+              Vaciar
+            </button>
+          </div>
+          <div class="table-wrap">
+            <table *ngIf="lineas.length > 0; else emptyCart">
+              <thead>
+                <tr>
+                  <th>Producto</th>
+                  <th>Cantidad</th>
+                  <th>Dto. (€)</th>
+                  <th>Subtotal</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let linea of lineas; let i = index">
+                  <td class="product-cell">
+                    <strong>{{ linea.producto.nombre }}</strong>
+                    <small>{{ linea.producto.referencia }}</small>
+                  </td>
+                  <td>
+                    <input
+                      type="number"
+                      min="1"
+                      [value]="linea.cantidad"
+                      (change)="
+                        actualizarCantidad(linea, $any($event.target).value)
+                      "
+                      class="quantity-input"
+                    />
+                  </td>
+                  <td>
+                    <input
+                      type="number"
+                      min="0"
+                      step="0.5"
+                      [(ngModel)]="linea.descuentoLinea"
+                      class="discount-input"
+                    />
+                  </td>
+                  <td class="subtotal-cell">
+                    {{ totalLinea(linea) | currency: "EUR" }}
+                  </td>
+                  <td class="action-cell">
+                    <button
+                      type="button"
+                      class="remove-btn"
+                      (click)="quitar(i)"
+                    >
+                      ✖
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <ng-template #emptyCart>
+              <div class="empty-cart">
+                <p>El carrito está vacío</p>
+                <p class="hint">Busca productos arriba para comenzar</p>
+              </div>
+            </ng-template>
+          </div>
+        </div>
+      </section>
+
+      <!-- Panel derecho: Checkout -->
+      <aside class="checkout">
+        <h3>FINALIZAR VENTA</h3>
+
+        <div class="form-group">
+          <label>Método de pago</label>
+          <select [(ngModel)]="metodoPago">
+            <option value="EFECTIVO">Efectivo</option>
+            <option value="TARJETA">Tarjeta</option>
+            <option value="OTRO">Otro</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Descuento global (€)</label>
+          <input
+            type="number"
+            min="0"
+            step="0.5"
+            [(ngModel)]="descuentoGlobal"
+          />
+        </div>
+
+        <label class="checkbox-label">
+          <input type="checkbox" [(ngModel)]="forzarSinStock" />
+          <span>Forzar venta sin stock</span>
+        </label>
+
+        <div class="cliente-section">
+          <label>Cliente</label>
+          <div class="cliente-busqueda">
+            <div class="search-cliente-wrapper">
+              <i class="fas fa-search search-icon"></i>
+              <input
+                type="text"
+                [(ngModel)]="busquedaCliente"
+                (input)="buscarClientes()"
+                (blur)="ocultarResultadosClientes()"
+                placeholder="Buscar cliente por nombre o teléfono..."
+                class="cliente-search-input"
+              />
+              <div
+                class="cliente-resultados"
+                *ngIf="mostrarResultadosClientes && clientesResultados.length"
+              >
+                <div
+                  *ngFor="let c of clientesResultados"
+                  class="cliente-resultado"
+                  (mousedown)="seleccionarCliente(c)"
+                >
+                  <i class="fas fa-user-circle"></i>
+                  <div class="cliente-info">
+                    <strong>{{ c.nombre }} {{ c.apellidos }}</strong>
+                    <small
+                      >{{ c.telefono }}
+                      {{ c.email ? "· " + c.email : "" }}</small
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="cliente-actions">
+              <span *ngIf="clienteId" class="cliente-info">
+                <i class="fas fa-check-circle"></i> Cliente ID: {{ clienteId }}
+                <button
+                  type="button"
+                  class="btn-clear-cliente"
+                  (click)="limpiarCliente()"
+                >
+                  ✖
+                </button>
+              </span>
+              <button
+                type="button"
+                class="btn-small"
+                (click)="mostrarClienteRapido = true"
+              >
+                <i class="fas fa-plus"></i>
+                {{ clienteId ? "Cambiar" : "Nuevo cliente" }}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <app-cliente-quick-create
+          *ngIf="mostrarClienteRapido"
+          (creado)="clienteId = $event.id; mostrarClienteRapido = false"
+          (cancelar)="mostrarClienteRapido = false"
+        />
+
+        <div class="warning-badge" *ngIf="hayDescuentosSolapados">
+          <i class="fas fa-exclamation-triangle"></i>
+          <span
+            >Los descuentos por línea y global no pueden aplicarse
+            simultáneamente</span
+          >
+        </div>
+
+        <div class="totals">
+          <div class="total-row">
+            <span>Subtotal</span>
+            <strong>{{ subtotal() | currency: "EUR" }}</strong>
+          </div>
+          <div class="total-row" *ngIf="descuentoGlobal > 0">
+            <span>Descuento global</span>
+            <span>- {{ descuentoGlobal | currency: "EUR" }}</span>
+          </div>
+          <div class="total-row grand-total">
+            <span>Total a pagar</span>
+            <strong class="final-total">{{ total() | currency: "EUR" }}</strong>
+          </div>
+        </div>
+
+        <p class="error" *ngIf="error">{{ error }}</p>
+        <button
+          type="button"
+          class="btn-primary"
+          (click)="finalizar()"
+          [disabled]="lineas.length === 0"
+        >
+          FINALIZAR
+        </button>
+      </aside>
+    </div>
+
+    <!-- Ticket de venta -->
+    <section class="ticket" *ngIf="ticket">
+      <div class="ticket-header">
+        <h2>ALGEDRO S.L.</h2>
+        <p>Ticket de venta</p>
+      </div>
+      <div class="ticket-body">
+        <p>
+          <strong>{{ ticket.numeroVenta }}</strong> ·
+          {{ ticket.fecha | date: "dd/MM/yy HH:mm" }}
+        </p>
+        <p *ngIf="ticket.empleadoNombre">
+          <i class="fas fa-user"></i> Atendido por: {{ ticket.empleadoNombre }}
+        </p>
+
+        <div class="ticket-items">
+          <div *ngFor="let linea of ticket.lineas" class="ticket-item">
+            <span>{{ linea.nombreProducto }} x{{ linea.cantidad }}</span>
+            <span>{{ linea.subtotalLinea | currency: "EUR" }}</span>
+          </div>
+        </div>
+
+        <!-- ✅ Mostrar descuentos -->
+        <div class="ticket-subtotal" *ngIf="ticket.subtotal !== ticket.total">
+          <div class="ticket-item">
+            <span>Subtotal:</span>
+            <span>{{ ticket.subtotal | currency: "EUR" }}</span>
+          </div>
+        </div>
+
+        <div class="ticket-discounts" *ngIf="ticket.descuentoGlobal > 0">
+          <div class="ticket-item discount">
+            <span>Descuento global:</span>
+            <span>- {{ ticket.descuentoGlobal | currency: "EUR" }}</span>
+          </div>
+        </div>
+
+        <div class="ticket-total">
+          <strong>Total: {{ ticket.total | currency: "EUR" }}</strong>
+        </div>
+
+        <div class="ticket-method">
+          <small>Pago: {{ ticket.metodoPago }}</small>
+        </div>
+      </div>
+      <div class="ticket-footer">
+        <button type="button" class="btn-close" (click)="exportarTicketPDF()">
+          <i class="fas fa-file-pdf"></i> Exportar PDF
+        </button>
+        <button type="button" class="btn-close" (click)="ticket = null">
+          Cerrar
+        </button>
+      </div>
+    </section>
+  </section>
+</div>

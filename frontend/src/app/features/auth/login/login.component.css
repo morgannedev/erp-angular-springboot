@@ -1,0 +1,540 @@
+/* 1. DISTRIBUCIÓN PANTALLA COMPARTIDA */
+.login-shell {
+  display: grid;
+  height: 100vh;
+  max-height: 100vh;
+  grid-template-columns: 1.2fr 560px; /* Izquierda fluido, derecha fija */
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* 2. AREA IZQUIERDA: MARCA EN LA ZONA INFERIOR */
+.login-branding-zone {
+  display: flex;
+  align-items: flex-end; /* Empuja el contenido al fondo */
+  justify-content: flex-start; /* Alínea a la izquierda */
+  padding: 60px; 
+  box-sizing: border-box;
+  height: 100%;
+}
+
+.brand-footer-block {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.brand-footer-logo {
+  width: 92px;
+  height: 92px;
+  object-fit: contain;
+  border-radius: 12px;
+  padding: 6px;
+}
+
+.brand-footer-text {
+  font-size: 3.25rem;
+  font-weight: 900;
+  color: var(--text);
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+/* 3. AREA DERECHA: CENTRADO PERFECTO EN MEDIO Y TRANSPARENTE */
+.login-panel-zone {
+  display: flex;
+  align-items: center;       /* Centra la tarjeta horizontalmente */
+  justify-content: center;   /* Centra la tarjeta verticalmente en medio */
+  padding: 10px;             
+  background: transparent;   
+  height: 100vh;             
+  box-sizing: border-box;      
+}
+
+/* LA TARJETA DE CRISTAL: Más ancha y más alta (gracias a un padding interno superior) */
+.login-panel {
+  width: 100%;
+  max-width: 460px;          /* MODIFICADO: Subido de 420px a 460px para hacerla más ancha */
+  display: flex;
+  flex-direction: column;
+  height: max-content;       
+  padding: 54px 44px;        /* MODIFICADO: Más padding para darle mucha más altura e impacto visual */
+  border: 2px solid rgba(255, 255, 255, 0.18);
+  border-radius: 20px;       /* Bordes ligeramente más suaves por el tamaño nuevo */
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.45);
+  box-sizing: border-box;
+}
+
+.brand {
+  margin: 0 0 10px;
+  font-size: 1rem;           /* MODIFICADO: Texto de la marca más grande */
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--lime);
+  font-weight: 800;
+}
+
+h1 {
+  margin: 0 0 36px;
+  font-size: 2.5rem;         /* MODIFICADO: Título principal más grande y potente */
+  color: var(--text);
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+/* Field Groups */
+.field-group {
+  display: grid;
+  gap: 10px;                 /* MODIFICADO: Más separación entre label e input */
+  margin-bottom: 26px;       /* MODIFICADO: Más separación entre bloques */
+}
+
+.password-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+label {
+  color: white;
+  font-weight: 700;
+  font-size: 0.88rem;        /* MODIFICADO: Etiquetas un poco más grandes y legibles */
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.forgot-link {
+  color: var(--lime);
+  text-decoration: none;
+  font-size: 0.9rem;         /* MODIFICADO: Enlace ligeramente más grande */
+  font-weight: 600;
+  transition: opacity 0.2s;
+}
+
+.forgot-link:hover {
+  opacity: 0.8;
+  text-decoration: underline;
+}
+
+.password-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+/* Inputs Esmerilados Más Grandes */
+.form-input {
+  width: 100%;
+  padding: 16px 20px;        /* MODIFICADO: Mayor área de click y relleno interno */
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.3);
+  color: var(--text);
+  font-size: 1.05rem;        /* MODIFICADO: El texto escrito dentro se ve más grande */
+  backdrop-filter: blur(4px);
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.form-input:focus {
+  border-color: rgba(198, 241, 53, 0.4);
+  box-shadow: 0 0 0 3px rgba(198, 241, 53, 0.12);
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.form-input.invalid {
+  border-color: rgba(251, 113, 133, 0.4);
+  background: rgba(251, 113, 133, 0.05);
+}
+
+.toggle-password {
+  position: absolute;
+  right: 18px;               /* MODIFICADO: Ajustado al nuevo padding */
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted);
+  transition: color 0.2s;
+}
+
+.toggle-password:hover {
+  color: var(--lime);
+}
+
+.eye-icon {
+  width: 22px;               /* MODIFICADO: Icono del ojo más grande */
+  height: 22px;
+}
+
+/* Checkbox */
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 5px;       /* MODIFICADO: Más separación entre el checkbox y el siguiente bloque */
+  cursor: pointer;
+  color: rgba(255, 255, 255, 1.8);
+  width: fit-content;
+  user-select: none;
+}
+
+.checkbox-label input[type="checkbox"] {
+  width: 20px;               /* MODIFICADO: Cuadrado del checkbox más grande */
+  height: 20px;
+  margin: 0;
+  cursor: pointer;
+  accent-color: var(--lime);
+}
+
+.checkbox-text {
+  font-size: 0.95rem;
+}
+
+/* Botón de envío más alto y grande */
+.submit-btn {
+  width: 100%;
+  height: 56px;              /* MODIFICADO: Subido de 48px a 56px para que tenga más presencia */
+  border: 1px solid rgba(198, 241, 53, 0.4);
+  background: linear-gradient(135deg, var(--lime), #9ee91d);
+  color: #071006;
+  font-weight: 700;
+  font-size: 1.1rem;         /* MODIFICADO: Texto "Entrar" más grande */
+  cursor: pointer;
+  border-radius: 12px;
+  box-shadow: 0 4px 14px rgba(198, 241, 53, 0.12);
+  transition: all 0.2s ease;
+}
+
+.submit-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, rgba(198, 241, 53, 1), rgba(158, 233, 29, 1));
+  box-shadow: 0 4px 20px rgba(198, 241, 53, 0.25);
+  transform: translateY(-1px);
+}
+
+.submit-btn:disabled {
+  opacity: 0.4;
+  cursor: progress;
+}
+
+.error {
+  margin-top: 14px;
+  color: #ffe4e6;
+  font-size: 0.9rem;
+  padding: 12px 14px;
+  background: rgba(251, 113, 133, 0.15);
+  border: 1px solid rgba(251, 113, 133, 0.25);
+  border-radius: 10px;
+}
+
+/* Divisor Social */
+.divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.85rem;        /* MODIFICADO: Texto sutilmente más grande */
+  margin: 32px 0 24px;       /* MODIFICADO: Más aire arriba y abajo */
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.divider::before { margin-right: 14px; }
+.divider::after { margin-left: 14px; }
+
+/* Botones Redes Sociales Más Grandes */
+.social-login {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.social-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  height: 50px;              /* MODIFICADO: Subido de 44px a 50px de altura */
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  color: var(--text);
+  font-size: 1rem;           /* MODIFICADO: Nombres de redes más legibles y grandes */
+  font-weight: 600;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.02);
+  transition: all 0.2s ease;
+}
+
+.social-btn:hover:not(:disabled) {
+  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.06);
+  transform: translateY(-1px);
+}
+
+.social-icon {
+  width: 22px;               /* MODIFICADO: Los logotipos internos de Google/Apple/GitHub crecen a juego */
+  height: 22px;
+}
+
+.google-btn {
+  background: rgba(66, 133, 244, 0.06);
+  border-color: rgba(66, 133, 244, 0.15);
+}
+
+.google-btn:hover:not(:disabled) {
+  background: rgba(66, 133, 244, 0.12);
+  border-color: rgba(66, 133, 244, 0.25);
+}
+
+/* 4. RESPONSIVIDAD */
+@media (max-width: 850px) {
+  .login-shell {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+
+    height: auto;
+    max-height: none;
+  }
+
+  .login-branding-zone {
+    align-items: center;
+    justify-content: center;
+    padding: 40px 24px 10px;
+  }
+
+  .brand-footer-text { font-size: 1.4rem; }
+  .brand-footer-logo { width: 40px; height: 40px; }
+
+  .login-panel-zone {
+    height: auto;
+    padding: 20px 24px 60px;
+    background: transparent;
+    border-left: none;
+    align-items: start;
+  }
+
+  .login-panel {
+    padding: 40px 24px;      /* Se suaviza un poco el padding en pantallas móviles */
+    max-width: 100%;
+  }
+}
+
+/* Modal informativo de recuperación de contraseña */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(12px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal-container {
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 24px;
+  width: 90%;
+  max-width: 440px;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+  animation: modalSlideIn 0.3s ease;
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.modal-header-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: rgba(198, 241, 53, 0.1);
+  border-radius: 50%;
+  color: var(--lime);
+  margin-right: 12px;
+}
+
+.modal-header h3 {
+  flex: 1;
+  margin: 0;
+  color: var(--lime);
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 28px;
+  cursor: pointer;
+  padding: 0;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s;
+}
+
+.modal-close:hover {
+  color: var(--lime);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.modal-body {
+  padding: 32px 28px;
+  text-align: center;
+}
+
+.modal-info-icon {
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.modal-message {
+  margin: 0 0 24px;
+  color: var(--text);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.modal-contact-card {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  padding: 16px 20px;
+  margin: 20px 0;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.contact-email {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.contact-email svg {
+  color: var(--lime);
+  flex-shrink: 0;
+}
+
+.email-link {
+  color: var(--lime);
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  transition: all 0.2s;
+}
+
+.email-link:hover {
+  text-decoration: underline;
+  opacity: 0.8;
+}
+
+.modal-note {
+  margin: 20px 0 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: center;
+  padding: 20px 24px 28px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.modal-btn {
+  padding: 12px 32px;
+  border-radius: 30px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+}
+
+.close-btn {
+  background: linear-gradient(135deg, var(--lime), #9ee91d);
+  color: #071006;
+  min-width: 140px;
+}
+
+.close-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(198, 241, 53, 0.3);
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .modal-container {
+    width: 92%;
+    margin: 16px;
+  }
+  
+  .modal-body {
+    padding: 24px 20px;
+  }
+  
+  .modal-header h3 {
+    font-size: 1.1rem;
+  }
+  
+  .contact-email {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  
+  .email-link {
+    font-size: 0.9rem;
+    word-break: break-all;
+  }
+}
+

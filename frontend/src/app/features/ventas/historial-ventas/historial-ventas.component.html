@@ -1,0 +1,199 @@
+<div class="main-glass-workspace">
+  <div class="history-shell">
+    <header class="topbar">
+      <div>
+        <h1>HISTORIAL DE VENTAS</h1>
+        <p>Consulta y gestión de todas las transacciones</p>
+      </div>
+      <div class="actions">
+        <button
+          type="button"
+          class="btn-secondary"
+          (click)="exportarCsv()"
+          [disabled]="!auth.isAdmin()"
+        >
+          <i class="fas fa-file-csv"></i> EXPORTAR CSV
+        </button>
+        <a routerLink="/ventas/pos" class="btn-primary">
+          <i class="fas fa-cash-register"></i> NUEVA VENTA
+        </a>
+      </div>
+    </header>
+
+    <!-- Filtros -->
+    <div class="filters-section">
+      <div class="filters-grid">
+        <div class="filter-group">
+          <label><i class="fas fa-calendar-alt"></i> Desde</label>
+          <input type="date" [(ngModel)]="filtroDesde" class="filter-input" />
+        </div>
+        <div class="filter-group">
+          <label><i class="fas fa-calendar-alt"></i> Hasta</label>
+          <input type="date" [(ngModel)]="filtroHasta" class="filter-input" />
+        </div>
+        <div class="filter-group">
+          <label><i class="fas fa-credit-card"></i> Método de pago</label>
+          <select [(ngModel)]="filtroMetodo" class="filter-input">
+            <option value="">Todos</option>
+            <option value="EFECTIVO">Efectivo</option>
+            <option value="TARJETA">Tarjeta</option>
+            <option value="OTRO">Otro</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label><i class="fas fa-chart-line"></i> Estado</label>
+          <select [(ngModel)]="filtroEstado" class="filter-input">
+            <option value="">Todos</option>
+            <option value="COMPLETADA">Completada</option>
+            <option value="ANULADA">Anulada</option>
+          </select>
+        </div>
+        <div class="filter-group" *ngIf="auth.isAdmin()">
+          <label><i class="fas fa-user"></i> Empleado</label>
+          <select [(ngModel)]="filtroEmpleadoId" class="filter-input">
+            <option [value]="null">Todos</option>
+            <option *ngFor="let emp of empleados" [value]="emp.id">
+              {{ emp.nombre }} {{ emp.apellidos }}
+            </option>
+          </select>
+        </div>
+        <div class="filter-actions">
+          <button class="btn-filter" (click)="aplicarFiltros()">
+            <i class="fas fa-search"></i> Filtrar
+          </button>
+          <button class="btn-clear" (click)="limpiarFiltros()">
+            <i class="fas fa-eraser"></i> Limpiar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabla de resultados -->
+    <div class="table-container" *ngIf="!isLoading; else loadingState">
+      <div class="table-wrap" *ngIf="historial.length > 0; else emptyState">
+        <table>
+          <thead>
+            <tr>
+              <th>Nº Venta</th>
+              <th>Fecha</th>
+              <th>Cliente</th>
+              <th>Empleado</th>
+              <th>Método</th>
+              <th>Total</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let venta of historial" (click)="verDetalle(venta)" class="clickable-row">
+              <td><strong>{{ venta.numeroVenta }}</strong></td>
+              <td>{{ venta.fecha | date: "dd/MM/yy HH:mm" }}</td>
+              <td>{{ venta.clienteId || "Cliente ocasional" }}</td>
+              <td>{{ venta.empleadoNombre || "Empleado #" + venta.empleadoId }}</td>
+              <td>
+                <span class="method-badge" [class]="'method-' + (venta.metodoPago | lowercase)">
+                  {{ venta.metodoPago }}
+                </span>
+              </td>
+              <td class="total-cell">{{ venta.total | currency: "EUR" }}</td>
+              <td>
+                <span class="status-badge" [class.completed]="venta.estado === 'COMPLETADA'"
+                      [class.cancelled]="venta.estado === 'ANULADA'">
+                  {{ venta.estado === "COMPLETADA" ? "COMPLETADA" : "ANULADA" }}
+                </span>
+              </td>
+              <td class="actions-cell">
+                <button class="btn-icon" (click)="$event.stopPropagation(); descargarTicketPDF(venta)" title="Descargar PDF">
+                  <i class="fas fa-file-pdf"></i>
+                </button>
+                <button class="btn-icon danger" 
+                        *ngIf="auth.isAdmin() && venta.estado !== 'ANULADA'"
+                        (click)="$event.stopPropagation(); anular(venta)" 
+                        title="Anular venta">
+                  <i class="fas fa-ban"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Paginación -->
+    <div class="pagination" *ngIf="totalPaginas > 1">
+      <button class="btn-pagination" [disabled]="paginaActual === 0" (click)="cambiarPagina(paginaActual - 1)">
+        <i class="fas fa-chevron-left"></i> Anterior
+      </button>
+      <span class="page-info">Página {{ paginaActual + 1 }} de {{ totalPaginas }} ({{ totalElementos }} ventas)</span>
+      <button class="btn-pagination" [disabled]="paginaActual >= totalPaginas - 1" (click)="cambiarPagina(paginaActual + 1)">
+        Siguiente <i class="fas fa-chevron-right"></i>
+      </button>
+    </div>
+
+    <!-- Estados -->
+    <ng-template #loadingState>
+      <div class="loading-state">
+        <i class="fas fa-spinner fa-spin"></i>
+        <p>Cargando historial de ventas...</p>
+      </div>
+    </ng-template>
+
+    <ng-template #emptyState>
+      <div class="empty-state">
+        <i class="fas fa-receipt"></i>
+        <p>No hay ventas registradas</p>
+        <p class="hint">Realiza tu primera venta desde el POS</p>
+        <a routerLink="/ventas/pos" class="btn-primary">Ir a Punto de Venta</a>
+      </div>
+    </ng-template>
+
+    <!-- Modal de detalle -->
+    <div class="modal-overlay" *ngIf="ventaSeleccionada" (click)="cerrarDetalle()">
+      <div class="modal-panel" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h3><i class="fas fa-receipt"></i> Detalle Venta {{ ventaSeleccionada.numeroVenta }}</h3>
+          <button class="close-modal" (click)="cerrarDetalle()">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="detail-info">
+            <p><strong>Fecha:</strong> {{ ventaSeleccionada.fecha | date: "dd/MM/yyyy HH:mm" }}</p>
+            <p><strong>Empleado:</strong> {{ ventaSeleccionada.empleadoNombre || "Empleado #" + ventaSeleccionada.empleadoId }}</p>
+            <p><strong>Cliente:</strong> {{ ventaSeleccionada.clienteId || "Cliente ocasional" }}</p>
+            <p><strong>Método de pago:</strong> {{ ventaSeleccionada.metodoPago }}</p>
+            <p *ngIf="ventaSeleccionada.descuentoGlobal > 0"><strong>Descuento global:</strong> {{ ventaSeleccionada.descuentoGlobal | currency: "EUR" }}</p>
+          </div>
+          <div class="detail-items">
+            <h4>Productos</h4>
+            <table class="detail-table">
+              <thead>
+                <tr><th>Producto</th><th>Cantidad</th><th>Precio</th><th>Subtotal</th></tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let linea of ventaSeleccionada.lineas">
+                  <td>{{ linea.nombreProducto }}</td>
+                  <td>{{ linea.cantidad }}</td>
+                  <td>{{ linea.precioUnitario | currency: "EUR" }}</td>
+                  <td>{{ linea.subtotalLinea | currency: "EUR" }}</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr><td colspan="3"><strong>Total</strong></td><td><strong>{{ ventaSeleccionada.total | currency: "EUR" }}</strong></td></tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-secondary" (click)="descargarTicketPDF(ventaSeleccionada)">
+            <i class="fas fa-file-pdf"></i> Descargar PDF
+          </button>
+          <button class="btn-danger" *ngIf="auth.isAdmin() && ventaSeleccionada.estado !== 'ANULADA'" (click)="anular(ventaSeleccionada)">
+            <i class="fas fa-ban"></i> Anular venta
+          </button>
+          <button class="btn-primary" (click)="cerrarDetalle()">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

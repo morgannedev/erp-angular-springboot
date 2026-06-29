@@ -1,0 +1,155 @@
+<div class="main-glass-workspace">
+  <div class="products-shell">
+    <header class="topbar">
+      <div>
+        <h1>PRODUCTOS</h1>
+        <p>Gestión de inventario y catálogo</p>
+      </div>
+      <div class="actions">
+        <a *ngIf="esAdmin" routerLink="nuevo" class="btn-primary">
+          <i class="fas fa-plus"></i> Nuevo producto
+        </a>
+      </div>
+    </header>
+
+    <!-- Filtros -->
+    <div class="filters-section">
+      <div class="filters-grid">
+        <div class="search-wrapper">
+          <i class="fas fa-search search-icon"></i>
+          <input
+            type="search"
+            [formControl]="busquedaCtrl"
+            placeholder="Buscar por nombre, referencia o EAN..."
+            class="search-input"
+            (input)="onBuscar($event)"
+          />
+        </div>
+        <div class="filter-group">
+          <select [(ngModel)]="filtroCategoriaId" (change)="aplicarFiltros()" class="filter-select">
+            <option [value]="null">Todas las categorías</option>
+            <option *ngFor="let cat of categorias" [value]="cat.id">{{ cat.nombre }}</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <select [(ngModel)]="filtroProveedorId" (change)="aplicarFiltros()" class="filter-select">
+            <option [value]="null">Todos los proveedores</option>
+            <option *ngFor="let prov of proveedores" [value]="prov.id">{{ prov.nombre }}</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="table-container" *ngIf="page; else cargando">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th (click)="ordenarPor('referencia')" class="sortable">
+                Referencia
+                <i *ngIf="sortField === 'referencia'" [class]="sortDir === 'asc' ? 'fas fa-arrow-up' : 'fas fa-arrow-down'"></i>
+              </th>
+              <th (click)="ordenarPor('nombre')" class="sortable">
+                Nombre
+                <i *ngIf="sortField === 'nombre'" [class]="sortDir === 'asc' ? 'fas fa-arrow-up' : 'fas fa-arrow-down'"></i>
+              </th>
+              <th>EAN</th>
+              <th (click)="ordenarPor('precioVenta')" class="sortable">
+                PVP
+                <i *ngIf="sortField === 'precioVenta'" [class]="sortDir === 'asc' ? 'fas fa-arrow-up' : 'fas fa-arrow-down'"></i>
+              </th>
+              <th *ngIf="esAdmin">Coste</th>
+              <th (click)="ordenarPor('stockActual')" class="sortable">
+                Stock
+                <i *ngIf="sortField === 'stockActual'" [class]="sortDir === 'asc' ? 'fas fa-arrow-up' : 'fas fa-arrow-down'"></i>
+              </th>
+              <th>Estado</th>
+              <th *ngIf="esAdmin">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let p of page.contenido">
+              <td class="ref-cell">{{ p.referencia }}</td>
+              <td class="name-cell">
+                <ng-container *ngIf="esAdmin; else soloTexto">
+                  <a [routerLink]="[p.id, 'editar']">{{ p.nombre }}</a>
+                </ng-container>
+                <ng-template #soloTexto>
+                  <span>{{ p.nombre }}</span>
+                </ng-template>
+              </td>
+              <td>{{ p.ean ?? "-" }}</td>
+              <td class="price-cell">
+                {{ p.precioVenta | currency: "EUR" : "symbol" : "1.2-2" }}
+              </td>
+              <td *ngIf="esAdmin" class="price-cell">
+                {{
+                  p.precioCoste == null
+                    ? "-"
+                    : (p.precioCoste | currency: "EUR" : "symbol" : "1.2-2")
+                }}
+              </td>
+              <td>
+                <span [class]="p.enAlerta ? 'badge badge-off' : 'badge badge-ok'">
+                  {{ p.stockActual }}
+                </span>
+              </td>
+              <td>
+                <span [class]="p.activo ? 'badge badge-ok' : 'badge badge-off'">
+                  {{ p.activo ? "ACTIVO" : "INACTIVO" }}
+                </span>
+              </td>
+              <td *ngIf="esAdmin" class="actions-cell">
+                <a [routerLink]="[p.id, 'editar']" class="btn-icon" title="Editar">
+                  <i class="fas fa-edit"></i>
+                </a>
+                <button
+                  (click)="toggleEstado(p)"
+                  class="btn-icon"
+                  [class.danger]="p.activo"
+                  [title]="p.activo ? 'Desactivar' : 'Activar'"
+                >
+                  <i [class]="p.activo ? 'fas fa-toggle-off' : 'fas fa-toggle-on'"></i>
+                </button>
+                <button
+                  (click)="eliminar(p)"
+                  class="btn-icon danger"
+                  title="Eliminar"
+                >
+                  <i class="fas fa-trash-alt"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="pagination" *ngIf="page && page.totalPaginas > 1">
+      <button
+        class="btn-pagination"
+        [disabled]="paginaActual === 0"
+        (click)="irA(paginaActual - 1)"
+      >
+        <i class="fas fa-chevron-left"></i> Anterior
+      </button>
+      <span class="page-info"
+        >{{ paginaActual + 1 }} / {{ page.totalPaginas }}</span
+      >
+      <button
+        class="btn-pagination"
+        [disabled]="paginaActual >= page.totalPaginas - 1"
+        (click)="irA(paginaActual + 1)"
+      >
+        Siguiente <i class="fas fa-chevron-right"></i>
+      </button>
+    </div>
+
+    <ng-template #cargando>
+      <div class="loading-state">
+        <i class="fas fa-spinner fa-spin"></i>
+        <p>Cargando productos...</p>
+      </div>
+    </ng-template>
+  </div>
+</div>

@@ -1,0 +1,106 @@
+<div class="main-glass-workspace">
+  <div class="suppliers-shell">
+    <header class="topbar">
+      <div>
+        <h1>PROVEEDORES</h1>
+        <p>Gestión de proveedores y contactos comerciales</p>
+      </div>
+      <div class="actions">
+        <a *ngIf="esAdmin" routerLink="nuevo" class="btn-primary">
+          <i class="fas fa-plus"></i> Nuevo proveedor
+        </a>
+      </div>
+    </header>
+
+    <div class="search-section">
+      <div class="search-wrapper">
+        <input
+          type="search"
+          [formControl]="busquedaCtrl"
+          placeholder="Buscar por nombre, NIF o contacto..."
+          class="search-input"
+          (input)="onBuscar($event)"
+        />
+      </div>
+    </div>
+
+    <div class="table-container" *ngIf="page; else cargando">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Proveedor</th>
+              <th>NIF</th>
+              <th>Contacto</th>
+              <th>Ciudad</th>
+              <th>Estado</th>
+              <th *ngIf="esAdmin">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let p of page.contenido">
+              <td class="supplier-cell">
+                <i class="fas fa-building supplier-icon"></i>
+                <div class="supplier-info">
+                  <a [routerLink]="[p.id]" class="supplier-name">{{ p.nombre }}</a>
+                  <small class="supplier-id" *ngIf="esAdmin">ID: {{ p.id }}</small>
+                </div>
+              </td>
+              <td class="nif-cell">{{ p.nif ?? '—' }}</td>
+              <td class="contact-cell">
+                <div class="contact-info">
+                  <span *ngIf="p.contactoNombre" class="contact-name">
+                    <i class="fas fa-user"></i> {{ p.contactoNombre }}
+                  </span>
+                  <span *ngIf="p.telefono" class="contact-phone">
+                    <i class="fas fa-phone"></i> {{ p.telefono }}
+                  </span>
+                  <span *ngIf="p.email" class="contact-email">
+                    <i class="fas fa-envelope"></i> {{ p.email }}
+                  </span>
+                  <span *ngIf="!p.contactoNombre && !p.telefono && !p.email" class="empty-value">—</span>
+                </div>
+              </td>
+              <td class="city-cell">
+                <span *ngIf="p.ciudad">
+                  <i class="fas fa-map-marker-alt"></i> {{ p.ciudad }}
+                </span>
+                <span *ngIf="!p.ciudad" class="empty-value">—</span>
+              </td>
+              <td>
+                <span [class]="p.activo ? 'badge badge-ok' : 'badge badge-off'">
+                  {{ p.activo ? 'ACTIVO' : 'INACTIVO' }}
+                </span>
+              </td>
+              <td *ngIf="esAdmin" class="actions-cell">
+                <a [routerLink]="[p.id, 'editar']" class="btn-icon" title="Editar">
+                  <i class="fas fa-edit"></i>
+                </a>
+                <button (click)="toggleEstado(p)" class="btn-icon" 
+                  [class.danger]="p.activo" [title]="p.activo ? 'Desactivar' : 'Activar'">
+                  <i [class]="p.activo ? 'fas fa-toggle-off' : 'fas fa-toggle-on'"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="pagination" *ngIf="page && page.totalPaginas > 1">
+      <button class="btn-pagination" [disabled]="paginaActual === 0" (click)="irA(paginaActual - 1)">
+        ◀ Anterior
+      </button>
+      <span class="page-info">{{ paginaActual + 1 }} / {{ page.totalPaginas }}</span>
+      <button class="btn-pagination" [disabled]="paginaActual >= page.totalPaginas - 1" (click)="irA(paginaActual + 1)">
+        Siguiente ▶
+      </button>
+    </div>
+
+    <ng-template #cargando>
+      <div class="loading-state">
+        <p>Cargando proveedores...</p>
+      </div>
+    </ng-template>
+  </div>
+</div>
