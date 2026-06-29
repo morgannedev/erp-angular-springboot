@@ -1,0 +1,2 @@
+-- Algedro S.L. base schema placeholder.
+-- Real schema migrations start in V2 according to the technical roadmap.
