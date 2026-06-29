@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: algedro-backend
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
+
+server:
+  port: ${SERVER_PORT:8080}
+  servlet:
+    context-path: /api/v1
+
+algedro:
+  jwt:
+    secret: ${JWT_SECRET:change_me_to_a_base64_or_long_secret_at_least_32_chars}
+    expiration-ms: ${JWT_EXPIRATION_MS:3600000}
+    refresh-expiration-ms: ${JWT_REFRESH_EXPIRATION_MS:604800000}
+    max-failed-attempts: ${JWT_MAX_FAILED_ATTEMPTS:5}
+    lock-duration-minutes: ${JWT_LOCK_DURATION_MINUTES:15}
