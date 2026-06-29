@@ -1,0 +1,595 @@
+html,
+body {
+  min-height: 100%;
+  overflow: hidden; /* Evita cualquier desborde del componente raíz */
+  height: 100vh;
+}
+
+:root {
+  /* Paleta adaptada a transparencias Glassmorphism */
+  --bg: #070b11;
+  --text: #ffffff;
+  --muted: #cbd5e1;
+  --subtle: #94a3b8;
+  --lime: #c6f135;
+  --lime-soft: rgba(198, 241, 53, 0.12);
+  --blue: #38bdf8;
+  --orange: #fb923c;
+  --red: #fb7185;
+  --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  --radius: 12px; /* Esquinas ligeramente más curvas que favorecen el look "cristal" */
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(198, 241, 53, 0.3) rgba(255, 255, 255, 0.05);
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--text);
+  font-family: Inter, "Segoe UI", Arial, Helvetica, sans-serif;
+  position: relative;
+  overflow-x: hidden;
+}
+
+body > app-root > *:not(router-outlet),
+.app-main > *:not(router-outlet) {
+  display: block;
+  min-height: 100vh;
+  background-image: url('/assets/background.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+/* --- NAVBAR GLASS --- */
+/* --- NAVBAR GLASS (styles.css) --- */
+.app-navbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  min-height: 76px;
+  padding: 12px 28px;
+  height: 70px;
+  
+  /* Borde reflectante de cristal fino en la base */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  /* Fondo translúcido muy ligero para absorber los gradientes del body */
+  background: rgba(10, 16, 26, 0.4);
+  /* Esencial para el efecto esmerilado/cristal */
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+}
+
+.brand-block {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--text);
+}
+
+.brand-block:hover {
+  color: var(--text);
+}
+
+/* El cuadro que rodea el icono de la app se vuelve un cristal luminoso */
+.brand-mark {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border: 1px solid rgba(198, 241, 53, 0.4);
+  border-radius: var(--radius);
+  background: rgba(198, 241, 53, 0.1);
+  color: var(--lime);
+  font-weight: 900;
+  backdrop-filter: blur(4px);
+}
+
+.brand-block strong,
+.brand-block small {
+  display: block;
+}
+
+.brand-block small {
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.app-navbar nav {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* Enlaces del menú del Navbar */
+.app-navbar nav a {
+  border: 1px solid transparent;
+  border-radius: 8px; /* Esquinas consistentes con el nuevo estilo */
+  color: rgba(255, 255, 255, 0.7); /* Mayor brillo para mejorar la legibilidad que comentábamos */
+  padding: 8px 14px;
+  transition: all 0.2s ease;
+}
+
+/* Estado activo o hover: se dibuja una píldora de cristal sobre la barra */
+.app-navbar nav a:hover,
+.app-navbar nav a.active {
+  border-color: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.06);
+  color: #ffffff;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.app-main > *:not(router-outlet) {
+  min-height: calc(100vh - 76px);
+}
+
+a {
+  color: var(--blue);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #7dd3fc;
+}
+
+h1, h2, h3, p {
+  margin-top: 0;
+}
+
+h1 {
+  margin-bottom: 0;
+  font-size: clamp(1.65rem, 4vw, 2.35rem);
+  line-height: 1.08;
+  font-weight: 800;
+}
+
+h2 {
+  width: min(1120px, 100%);
+  margin: 0 auto 18px;
+  font-size: 1.35rem;
+}
+
+.page-header,
+.input-search,
+body > app-root > app-stock-entrada form,
+body > app-root > app-producto-form form,
+body > app-root > app-proveedor-form form,
+body > app-root > app-categoria-form form,
+.app-main > app-stock-entrada form,
+.app-main > app-producto-form form,
+.app-main > app-proveedor-form form,
+.app-main > app-categoria-form form,
+body > app-root > app-stock-entrada h2,
+body > app-root > app-producto-form h2,
+body > app-root > app-proveedor-form h2,
+body > app-root > app-categoria-form h2,
+.app-main > app-stock-entrada h2,
+.app-main > app-producto-form h2,
+.app-main > app-proveedor-form h2,
+.app-main > app-categoria-form h2,
+body > app-root > app-categoria-list table,
+body > app-root > app-producto-list table,
+body > app-root > app-proveedores-list table,
+body > app-root > app-cliente-list table,
+body > app-root > app-stock-alertas table,
+body > app-root > app-stock-historial table,
+.app-main > app-categoria-list table,
+.app-main > app-producto-list table,
+.app-main > app-proveedores-list table,
+.app-main > app-cliente-list table,
+.app-main > app-stock-alertas table,
+.app-main > app-stock-historial table,
+.paginacion,
+body > app-root > app-categoria-list > p,
+body > app-root > app-stock-alertas > p,
+body > app-root > app-stock-historial > p,
+.app-main > app-categoria-list > p,
+.app-main > app-stock-alertas > p,
+.app-main > app-stock-historial > p {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.page-header p,
+.eyebrow,
+.breadcrumb {
+  margin: 0 0 6px;
+  color: var(--lime);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* --- TARJETAS Y CONTENEDORES GLASSMORPHISM --- */
+table,
+form,
+.modal-panel,
+.dashboard-panel,
+.sale-panel,
+.checkout,
+.ticket,
+.history,
+.table-wrap {
+  /* Fondo translúcido blanco muy suave que recoge el color de atrás */
+  background: rgba(255, 255, 255, 0.08);
+  /* El borde fino simulando el canto del cristal reflectante */
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: var(--radius);
+  /* Desenfoque del fondo */
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: var(--shadow);
+}
+
+table {
+  width: 100%;
+  overflow: hidden;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+th,
+td {
+  padding: 14px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  text-align: left;
+  vertical-align: middle;
+}
+
+th {
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--muted);
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+tr:last-child td {
+  border-bottom: 0;
+}
+
+tbody tr:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+form {
+  display: grid;
+  gap: 16px;
+  padding: 22px;
+}
+
+label {
+  display: grid;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* --- INPUTS GLASS --- */
+input,
+select,
+textarea {
+  width: 100%;
+  min-height: auto;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.25);
+  color: var(--text);
+  font: inherit;
+  letter-spacing: 0;
+  outline: none;
+  padding: 10px 12px;
+  transition: all 0.2s ease;
+}
+
+textarea {
+  resize: vertical;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: rgba(198, 241, 53, 0.4);
+  background: rgba(0, 0, 0, 0.4);
+  box-shadow: 0 0 0 3px rgba(198, 241, 53, 0.12);
+}
+
+/* --- BOTONES Y ACCIONES --- */
+button,
+.btn,
+.primary-action,
+.back-btn,
+.cancel-btn {
+  min-height: 38px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font: inherit;
+  font-weight: 800;
+  padding: 9px 15px;
+  text-decoration: none;
+  backdrop-filter: blur(4px);
+  transition: border-color 0.15s ease, background 0.15s ease, color 0.15s ease, transform 0.15s ease;
+}
+
+button:hover,
+.btn:hover,
+.primary-action:hover,
+.back-btn:hover,
+.cancel-btn:hover {
+  border-color: rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+
+button:active,
+.btn:active,
+.submit-btn:active {
+  transform: translateY(1px);
+}
+
+button[type="submit"],
+.submit-btn {
+  min-width: 150px;
+}
+
+button:disabled,
+.btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.35;
+}
+
+/* Botón principal sutilmente brillante */
+.btn-primary,
+.primary,
+.submit-btn {
+  border-color: rgba(198, 241, 53, 0.4);
+  background: linear-gradient(135deg, rgba(198, 241, 53, 0.85), rgba(158, 233, 29, 0.85));
+  color: #071006;
+  box-shadow: 0 4px 14px rgba(198, 241, 53, 0.15);
+}
+
+.btn-primary:hover,
+.primary:hover,
+.submit-btn:hover {
+  background: linear-gradient(135deg, rgba(198, 241, 53, 1), rgba(158, 233, 29, 1));
+  box-shadow: 0 4px 20px rgba(198, 241, 53, 0.3);
+}
+
+/* Botón de Salir / Peligro adaptado */
+.btn-danger {
+  border-color: rgba(251, 113, 133, 0.3);
+  background: rgba(251, 113, 133, 0.15);
+  color: #ffe4e6;
+}
+
+.btn-danger:hover {
+  background: rgba(251, 113, 133, 0.3);
+  border-color: rgba(251, 113, 133, 0.5);
+  color: #ffffff;
+}
+
+.btn-sm {
+  min-height: 32px;
+  padding: 6px 10px;
+  font-size: 0.84rem;
+}
+
+/* Badges */
+.badge {
+  display: inline-flex;
+  min-width: 66px;
+  justify-content: center;
+  border-radius: 999px;
+  padding: 4px 9px;
+  font-size: 0.76rem;
+  font-weight: 900;
+}
+
+.badge-ok {
+  border: 1px solid rgba(198, 241, 53, 0.3);
+  background: rgba(198, 241, 53, 0.1);
+  color: var(--lime);
+}
+
+.badge-off {
+  border: 1px solid rgba(251, 113, 133, 0.3);
+  background: rgba(251, 113, 133, 0.1);
+  color: var(--red);
+}
+
+.input-search {
+  display: block;
+  margin-bottom: 18px;
+}
+
+.paginacion,
+.form-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.paginacion {
+  justify-content: flex-end;
+  margin-top: 16px;
+  color: var(--muted);
+}
+
+.error,
+small {
+  color: var(--red);
+}
+
+.modal-panel {
+  margin-top: 16px;
+  margin-bottom: 16px;
+  padding: 16px;
+}
+
+@media (max-width: 720px) {
+  body > app-root > *:not(router-outlet),
+  .app-main > *:not(router-outlet) {
+    padding: 18px;
+  }
+
+  .app-navbar {
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 14px 18px;
+  }
+
+  .app-navbar nav {
+    justify-content: flex-start;
+  }
+
+  .page-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
+/* ============================================================
+   APP SHELL — Layout global con sidebar fijo
+   ============================================================ */
+
+/* El fondo con imagen se aplica a todo el shell */
+.app-shell {
+  display: flex;
+  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
+  background-image: url('/assets/background.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+/* Columna derecha: top-header + contenido scrollable */
+.app-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  margin-left: 260px; /* igual que el width del sidebar */
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+/* Área de contenido scrollable debajo del top-header */
+.app-main {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Cada página dentro del router-outlet ocupa su espacio natural */
+.app-main > *:not(router-outlet) {
+  display: block;
+  min-height: calc(100vh - 68px); /* 68px = altura del top-header */
+  /* Sin background-image aquí: ya lo pone .app-shell */
+  background-image: none;
+}
+
+.app-main {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Scrollbar más gruesa para .app-main */
+.app-main::-webkit-scrollbar {
+  width: 10px;
+}
+
+.app-main::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 10px;
+  margin: 4px 0;
+}
+
+.app-main::-webkit-scrollbar-thumb {
+  background:  rgba(255, 255, 255, 0.6);
+  border-radius: 10px;
+}
+
+.app-main::-webkit-scrollbar-thumb:hover {
+  background:  rgba(255, 255, 255, 0.6);
+}
+
+/* En móvil el sidebar desaparece y el contenido ocupa todo */
+@media (max-width: 850px) {
+  .app-content {
+    margin-left: 0;
+  }
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background:  rgba(255, 255, 255, 0.6);
+  border-radius: 10px;
+  transition: background 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.6);
+}
+
+::-webkit-scrollbar-thumb:active {
+  background:  rgba(255, 255, 255, 0.6);
+}
+
+.app-main {
+  scrollbar-width: auto;
+  scrollbar-color:  rgba(255, 255, 255, 0.6)
+}
