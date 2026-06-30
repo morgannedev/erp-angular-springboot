@@ -1,6 +1,7 @@
 # Algedro S.L.
 
 Aplicación web de gestión integral para droguería. Centraliza el control de inventario, el registro de ventas en punto de venta (POS), y la gestión de clientes, proveedores y empleados en una única herramienta interna accesible solo para el personal autorizado.
+
 <img width="1600" height="736" alt="image" src="https://github.com/user-attachments/assets/3b2371b7-a476-43f3-a335-da4c47876bbc" />
 
 ---
