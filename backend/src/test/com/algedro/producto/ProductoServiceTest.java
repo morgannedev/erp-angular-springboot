@@ -407,12 +407,13 @@ class ProductoServiceTest {
         void testListar_rolEmpleado_precioCosteNulo() {
             // GIVEN
             Page<Producto> pagina = new PageImpl<>(List.of(productoActivo));
+            // ✅ CORREGIDO - Usar isNull() para parámetros que pueden ser null
             given(productoRepository.buscarActivos(
-                    org.mockito.ArgumentMatchers.<Long>any(),       // categoriaId (Obliga a que sea tratado como Long)
-                    org.mockito.ArgumentMatchers.<Long>any(),       // proveedorId (Obliga a que sea tratado como Long)
-                    org.mockito.ArgumentMatchers.anyString(),       // query (Fuerza a que sea String)
-                    org.mockito.ArgumentMatchers.anyBoolean(),      // activo
-                    org.mockito.ArgumentMatchers.any(org.springframework.data.domain.Pageable.class)
+                    isNull(),        // categoriaId - puede ser null
+                    isNull(),        // proveedorId - puede ser null
+                    anyString(),     // query
+                    eq(true),        // activo - para empleado siempre true
+                    any(Pageable.class)
             )).willReturn(pagina);
 
             // WHEN
@@ -438,12 +439,14 @@ class ProductoServiceTest {
             // GIVEN — 25 productos activos en BD
             List<Producto> productos = java.util.Collections.nCopies(25, productoActivo);
             Page<Producto> pagina = new PageImpl<>(productos, PageRequest.of(0, 25), 25);
+
+            // ✅ CORREGIDO - Usar isNull() para parámetros que pueden ser null
             given(productoRepository.buscarActivos(
-                    (Long) isNull(),       // categoriaId
-                    (Long) isNull(),       // proveedorId
-                    eq(""),                // query normalizada
-                    eq(true),              // activo
-                    any(Pageable.class)    // pageable
+                    isNull(),        // categoriaId - puede ser null
+                    isNull(),        // proveedorId - puede ser null
+                    anyString(),     // query - String (no puede ser null en el método real)
+                    isNull(),        // activo - puede ser null (admin ve todos)
+                    any(Pageable.class)
             )).willReturn(pagina);
 
             // WHEN
@@ -451,6 +454,38 @@ class ProductoServiceTest {
 
             // THEN
             assertThat(resultado.getTotalElements()).isEqualTo(25);
+
+            // Verificar que se llamó con los argumentos correctos
+            then(productoRepository).should().buscarActivos(
+                    isNull(),        // categoriaId
+                    isNull(),        // proveedorId
+                    eq(""),          // query
+                    isNull(),        // activo (admin ve todos)
+                    any(Pageable.class)
+            );
+        }
+
+        @Test
+        @DisplayName("listar_conFiltros_devuelveResultadosFiltrados")
+        void testListar_conFiltros_devuelveResultadosFiltrados() {
+            // GIVEN
+            List<Producto> productos = List.of(productoActivo);
+            Page<Producto> pagina = new PageImpl<>(productos, PageRequest.of(0, 25), 1);
+
+            given(productoRepository.buscarActivos(
+                    eq(1L),          // categoriaId
+                    eq(1L),          // proveedorId
+                    eq("pino"),      // query
+                    eq(true),        // activo
+                    any(Pageable.class)
+            )).willReturn(pagina);
+
+            // WHEN
+            var resultado = productoService.listar(1L, 1L, "pino", true, PageRequest.of(0, 25), false);
+
+            // THEN
+            assertThat(resultado.getTotalElements()).isEqualTo(1);
+            assertThat(resultado.getContent().get(0).getNombre()).isEqualTo("Fregasuelos Pino 1L");
         }
     }
 }
