@@ -165,13 +165,19 @@ Todas las rutas se exponen bajo el prefijo `/api/v1`:
 
 Login con JWT. La sesión expira tras 8 horas de inactividad o al cerrar el navegador. Bloqueo temporal de cuenta tras 5 intentos fallidos. El administrador puede forzar el cierre de sesión de cualquier empleado.
 
+<img width="1600" height="736" alt="image" src="https://github.com/user-attachments/assets/09a8aa71-67e2-45f5-9709-61645550dbc3" />
+
 ### POS — Punto de Venta
 
 Registro de ventas en tiempo real con búsqueda por nombre, referencia o código de barras (compatible con lectores). Soporta descuentos por línea y globales, asociación opcional de cliente y selección de método de pago. Genera ticket exportable a PDF.
 
+<img width="1600" height="729" alt="image" src="https://github.com/user-attachments/assets/713c7349-d6d7-4957-afec-bad69acb09b1" />
+
 ### Historial de Ventas
 
 Listado paginado y filtrable por fecha, empleado y método de pago. El rol ADMIN puede exportar a CSV y anular ventas; la anulación revierte automáticamente el stock.
+
+<img width="1600" height="732" alt="image" src="https://github.com/user-attachments/assets/f6285a92-4a1b-4447-aa4c-5e3ac0384bdf" />
 
 ### Productos y Categorías
 
