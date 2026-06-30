@@ -116,7 +116,7 @@ Frontend disponible en `http://localhost:4200`.
 
 ## Tests
 
-El proyecto sigue TDD estricto: los tests se escriben antes que la implementación. Estado verificado: **189 tests, 0 fallos**.
+El proyecto sigue TDD estricto: los tests se escriben antes que la implementación. Estado verificado: **222 tests, 0 fallos**.
 
 ```bash
 cd backend
@@ -124,6 +124,8 @@ mvn test
 ```
 
 Los tests de integración dependen de Testcontainers y requieren Docker activo. En entornos sin Docker, 2 tests se omiten automáticamente.
+
+<img width="735" height="569" alt="image" src="https://github.com/user-attachments/assets/e612964f-b1ed-4e52-9e0d-03c3c3d5b62f" />
 
 ---
 
