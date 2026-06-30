@@ -183,21 +183,33 @@ Listado paginado y filtrable por fecha, empleado y método de pago. El rol ADMIN
 
 Catálogo con nombre, SKU, EAN, PVP, precio de coste, categoría, proveedor y estado (activo/inactivo). Categorías con hasta dos niveles de jerarquía. El precio de coste es visible solo para el rol ADMIN.
 
+<img width="1600" height="723" alt="image" src="https://github.com/user-attachments/assets/30fd9262-4e3c-4d6f-94f7-f160e01bcd96" />
+
+<img width="1600" height="734" alt="image" src="https://github.com/user-attachments/assets/78aa2f30-0550-4571-af81-e2e7ef5f7401" />
+
 ### Stock
 
 Niveles en tiempo real con alertas de stock mínimo en el dashboard del administrador. Registro de entradas de mercancía vinculadas a proveedor y albarán. Ajustes manuales con motivo obligatorio. Historial completo de movimientos por producto.
+
+<img width="1600" height="736" alt="image" src="https://github.com/user-attachments/assets/68fb1179-9552-4283-8215-6adc291a2e60" />
 
 ### Clientes
 
 Base de datos con historial de compras. Alta rápida desde el POS con solo nombre y teléfono como campos obligatorios. Exportación a CSV restringida al rol ADMIN.
 
+<img width="1600" height="736" alt="image" src="https://github.com/user-attachments/assets/5c791296-d0e6-436d-9ca6-bba8e135ef67" />
+
 ### Proveedores
 
 Gestión de proveedores vinculados a productos y entradas de stock.
 
+<img width="1600" height="731" alt="image" src="https://github.com/user-attachments/assets/97cb1d53-0652-44e8-9fcd-3639f072a890" />
+
 ### Empleados
 
 Creación de cuentas, asignación de roles (ADMIN / EMPLEADO), activación y desactivación de cuentas, y cierre forzado de sesión. Accesible solo para el rol ADMIN.
+
+<img width="1600" height="731" alt="image" src="https://github.com/user-attachments/assets/e994f7bf-6cc5-43d3-8bd2-6577edcf5702" />
 
 ---
 
