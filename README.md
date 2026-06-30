@@ -197,7 +197,7 @@ Niveles en tiempo real con alertas de stock mínimo en el dashboard del administ
 
 Base de datos con historial de compras. Alta rápida desde el POS con solo nombre y teléfono como campos obligatorios. Exportación a CSV restringida al rol ADMIN.
 
-<img width="1600" height="736" alt="image" src="https://github.com/user-attachments/assets/5c791296-d0e6-436d-9ca6-bba8e135ef67" />
+<img width="1600" height="732" alt="image" src="https://github.com/user-attachments/assets/373083d1-41c1-4602-8d48-bcf46cb9e525" />
 
 ### Proveedores
 
