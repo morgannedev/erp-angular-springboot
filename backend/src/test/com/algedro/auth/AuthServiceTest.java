@@ -35,6 +35,7 @@ class AuthServiceTest {
         passwordEncoder = mock(PasswordEncoder.class);
         jwtUtils = mock(JwtUtils.class);
         tokenBlacklistService = mock(TokenBlacklistService.class);
+        refreshTokenService = mock(RefreshTokenService.class);  // ✅ Añadir este mock
         authService = new AuthService(
                 usuarioRepository,
                 passwordEncoder,
@@ -54,16 +55,23 @@ class AuthServiceTest {
         when(passwordEncoder.matches("admin123", usuario.getPasswordHash())).thenReturn(true);
         when(jwtUtils.generateToken(usuario)).thenReturn("jwt-token");
 
+        // ✅ Mockear el refresh token
+        RefreshToken refreshToken = new RefreshToken();
+        refreshToken.setToken("refresh-token-123");
+        when(refreshTokenService.createRefreshToken(usuario.getId(), usuario.getUsername()))
+                .thenReturn(refreshToken);
+
         AuthResult result = authService.login("admin", "admin123");
 
         assertThat(result.token()).isEqualTo("jwt-token");
+        assertThat(result.refreshToken()).isEqualTo("refresh-token-123");
         assertThat(result.rol()).isEqualTo(Rol.ADMIN);
         assertThat(usuario.getIntentosFallidos()).isZero();
         assertThat(usuario.getUltimoAcceso()).isNotNull();
         assertThat(usuario.getBloqueadoHasta()).isNull();
 
-        // ✅ CORREGIDO - Ahora solo se guarda UNA vez en el login exitoso
         verify(usuarioRepository, times(1)).save(usuario);
+        verify(refreshTokenService).createRefreshToken(usuario.getId(), usuario.getUsername());
     }
 
     @Test
@@ -79,6 +87,7 @@ class AuthServiceTest {
         assertThat(usuario.getIntentosFallidos()).isEqualTo((short) 1);
         verify(usuarioRepository).save(usuario);
         verify(jwtUtils, never()).generateToken(any());
+        verify(refreshTokenService, never()).createRefreshToken(any(), anyString());
     }
 
     @Test
@@ -95,6 +104,7 @@ class AuthServiceTest {
         assertThat(usuario.getIntentosFallidos()).isEqualTo((short) 5);
         assertThat(usuario.getBloqueadoHasta()).isAfter(OffsetDateTime.now());
         verify(usuarioRepository).save(usuario);
+        verify(refreshTokenService, never()).createRefreshToken(any(), anyString());
     }
 
     @Test
@@ -109,6 +119,7 @@ class AuthServiceTest {
                 .hasMessage("Credenciales incorrectas");
 
         verify(jwtUtils, never()).generateToken(any());
+        verify(refreshTokenService, never()).createRefreshToken(any(), anyString());
     }
 
     @Test
@@ -123,6 +134,7 @@ class AuthServiceTest {
 
         verify(jwtUtils, never()).generateToken(any());
         verify(passwordEncoder, never()).matches(anyString(), anyString());
+        verify(refreshTokenService, never()).createRefreshToken(any(), anyString());
     }
 
     @Test
@@ -134,55 +146,67 @@ class AuthServiceTest {
         when(passwordEncoder.matches("admin123", usuario.getPasswordHash())).thenReturn(true);
         when(jwtUtils.generateToken(usuario)).thenReturn("jwt-token");
 
+        // ✅ Mockear el refresh token
+        RefreshToken refreshToken = new RefreshToken();
+        refreshToken.setToken("refresh-token-456");
+        when(refreshTokenService.createRefreshToken(usuario.getId(), usuario.getUsername()))
+                .thenReturn(refreshToken);
+
         authService.login("admin", "admin123");
 
         assertThat(usuario.getIntentosFallidos()).isZero();
         assertThat(usuario.getBloqueadoHasta()).isNull();
         assertThat(usuario.getUltimoAcceso()).isNotNull();
 
-        // ✅ CORREGIDO - Ahora solo se guarda UNA vez
         verify(usuarioRepository, times(1)).save(usuario);
+        verify(refreshTokenService).createRefreshToken(usuario.getId(), usuario.getUsername());
     }
 
     @Test
     void testLogout_invalidaToken() {
         String token = "valid-jwt-token";
         String authHeader = "Bearer " + token;
+        String refreshToken = "valid-refresh-token";
         long expirationTime = System.currentTimeMillis() + 3600000;
 
         when(jwtUtils.getExpirationTime(token)).thenReturn(expirationTime);
 
-        authService.logout(authHeader);
+        authService.logout(authHeader, refreshToken);
 
         verify(tokenBlacklistService).blacklistToken(token, expirationTime);
+        verify(refreshTokenService).revokeRefreshToken(refreshToken);
         assertThat(SecurityContextHolder.getContext().getAuthentication()).isNull();
     }
 
     @Test
     void testLogout_conTokenInvalido_noLanzaExcepcion() {
         String authHeader = "Bearer invalid-token";
+        String refreshToken = null;
 
-        // ✅ CORREGIDO - getExpirationTime ahora retorna tiempo actual en lugar de lanzar excepción
         when(jwtUtils.getExpirationTime("invalid-token")).thenReturn(System.currentTimeMillis());
 
-        // ✅ No debe lanzar excepción
-        authService.logout(authHeader);
+        authService.logout(authHeader, refreshToken);
 
         verify(tokenBlacklistService).blacklistToken(eq("invalid-token"), anyLong());
+        verify(refreshTokenService, never()).revokeRefreshToken(anyString());
     }
 
     @Test
     void testLogout_sinToken_noHaceNada() {
-        authService.logout(null);
+        authService.logout(null, null);
 
         verify(tokenBlacklistService, never()).blacklistToken(anyString(), anyLong());
+        verify(refreshTokenService, never()).revokeRefreshToken(anyString());
     }
 
     @Test
     void testLogout_sinBearerPrefix_noHaceNada() {
-        authService.logout("invalid-format");
+        String refreshToken = "some-refresh-token";
+        authService.logout("invalid-format", refreshToken);
 
         verify(tokenBlacklistService, never()).blacklistToken(anyString(), anyLong());
+        // El refresh token puede procesarse incluso si el access token es inválido
+        verify(refreshTokenService).revokeRefreshToken(refreshToken);
     }
 
     @Test
@@ -194,6 +218,7 @@ class AuthServiceTest {
                 .hasMessage("Credenciales incorrectas");
 
         verify(passwordEncoder, never()).matches(anyString(), anyString());
+        verify(refreshTokenService, never()).createRefreshToken(any(), anyString());
     }
 
     private Usuario activeUser() {

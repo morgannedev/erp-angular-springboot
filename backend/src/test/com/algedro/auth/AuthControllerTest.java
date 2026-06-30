@@ -45,9 +45,12 @@ class AuthControllerTest {
     @MockBean
     private TokenBlacklistService tokenBlacklistService;
 
+    @MockBean
+    private RefreshTokenService refreshTokenService;
+
     @Test
     void testLogin_200() throws Exception {
-        AuthResult result = new AuthResult("jwt-token", Rol.ADMIN, 1L, "admin", 28800);
+        AuthResult result = new AuthResult("jwt-token", "refresh-token", Rol.ADMIN, 1L, "admin", 28800);
         when(authService.login("admin", "admin123")).thenReturn(result);
 
         mockMvc.perform(post("/auth/login")
@@ -60,8 +63,9 @@ class AuthControllerTest {
                                 }
                                 """))
                 .andExpect(status().isOk())
+                // ✅ LoginResponseDTO tiene: token, refreshToken, rol, empleadoId, username, expiraEn
                 .andExpect(jsonPath("$.token").value("jwt-token"))
-                .andExpect(jsonPath("$.tipo").value("Bearer"))
+                .andExpect(jsonPath("$.refreshToken").value("refresh-token"))
                 .andExpect(jsonPath("$.rol").value("ADMIN"))
                 .andExpect(jsonPath("$.empleadoId").value(1))
                 .andExpect(jsonPath("$.username").value("admin"))
@@ -87,7 +91,6 @@ class AuthControllerTest {
 
     @Test
     void testLogout_200_conToken() throws Exception {
-        // ✅ CORREGIDO - Mockear correctamente para que el filtro pase
         Usuario usuario = new Usuario();
         usuario.setUsername("admin");
         usuario.setRol(Rol.ADMIN);
@@ -99,7 +102,8 @@ class AuthControllerTest {
 
         mockMvc.perform(post("/auth/logout")
                         .with(csrf())
-                        .header("Authorization", "Bearer jwt-token"))
+                        .header("Authorization", "Bearer jwt-token")
+                        .header("X-Refresh-Token", "refresh-token"))
                 .andExpect(status().isOk());
     }
 
@@ -112,18 +116,15 @@ class AuthControllerTest {
 
     @Test
     void testMe_200_conTokenValido() throws Exception {
-        // Crear usuario mock
         Usuario usuario = new Usuario();
         usuario.setUsername("admin");
         usuario.setRol(Rol.ADMIN);
 
-        // Mockear la validación del token
         when(jwtUtils.extractUsername(anyString())).thenReturn("admin");
         when(jwtUtils.isTokenValid(anyString(), any(UserDetails.class))).thenReturn(true);
         when(userDetailsService.loadUserByUsername("admin")).thenReturn(usuario);
         when(tokenBlacklistService.isBlacklisted(anyString())).thenReturn(false);
 
-        // Realizar la petición con el token en el header
         mockMvc.perform(get("/auth/me")
                         .header("Authorization", "Bearer valid-token"))
                 .andExpect(status().isOk())
@@ -145,5 +146,63 @@ class AuthControllerTest {
         mockMvc.perform(get("/auth/me")
                         .header("Authorization", "Bearer expired-token"))
                 .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void testRefresh_200() throws Exception {
+        AuthResult result = new AuthResult("new-jwt-token", "new-refresh-token", Rol.ADMIN, 1L, "admin", 28800);
+        when(refreshTokenService.refreshAccessToken("valid-refresh-token")).thenReturn(result);
+
+        mockMvc.perform(post("/auth/refresh")
+                        .with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "refreshToken": "valid-refresh-token"
+                                }
+                                """))
+                .andExpect(status().isOk())
+                // ✅ RefreshTokenResponseDTO tiene: accessToken, refreshToken, expiresIn
+                .andExpect(jsonPath("$.accessToken").value("new-jwt-token"))
+                .andExpect(jsonPath("$.refreshToken").value("new-refresh-token"))
+                .andExpect(jsonPath("$.expiresIn").value(28800));
+    }
+
+    @Test
+    void testRefresh_401_tokenInvalido() throws Exception {
+        when(refreshTokenService.refreshAccessToken("invalid-refresh-token"))
+                .thenThrow(new BadCredentialsException("Refresh token inválido"));
+
+        mockMvc.perform(post("/auth/refresh")
+                        .with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "refreshToken": "invalid-refresh-token"
+                                }
+                                """))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void testRefresh_400_tokenVacio() throws Exception {
+        mockMvc.perform(post("/auth/refresh")
+                        .with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "refreshToken": ""
+                                }
+                                """))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void testRefresh_400_sinToken() throws Exception {
+        mockMvc.perform(post("/auth/refresh")
+                        .with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{}"))
+                .andExpect(status().isBadRequest());
     }
 }
