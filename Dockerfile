@@ -6,6 +6,10 @@ RUN npm ci
 COPY frontend/ ./
 RUN cp tsconfig.json tsconfig.app.json
 RUN npm run build -- --configuration production
+# 🔽 DEPURACIÓN DEL FRONTEND 🔽
+RUN echo "=== CONTENIDO DE /app/frontend/dist ===" && \
+    ls -la /app/frontend/dist && \
+    echo "=== FIN ==="
 
 # Construir el backend
 FROM maven:3.9-eclipse-temurin-17-alpine AS backend-build
@@ -25,14 +29,15 @@ COPY --from=backend-build /app/backend/target/*.jar app.jar
 # Copiar el frontend construido
 COPY --from=frontend-build /app/frontend/dist/algedro-frontend /app/static
 
+# 🔽 DEPURACIÓN DEL DIRECTORIO ESTÁTICO 🔽
 RUN echo "=== CONTENIDO DE /app/static ===" && \
-    ls -la /app/static && \
+    ls -la /app/static || echo "El directorio /app/static está vacío o no existe" && \
     echo "=== FIN ==="
 
 # Instalar Nginx
 RUN apk add --no-cache nginx
 
-# Configurar Nginx (versión mejorada)
+# Configurar Nginx
 RUN echo 'server { \
     listen 80; \
     server_name localhost; \
