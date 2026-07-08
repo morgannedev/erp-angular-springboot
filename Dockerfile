@@ -23,7 +23,7 @@ WORKDIR /app
 COPY --from=backend-build /app/backend/target/*.jar app.jar
 
 # Copiar el frontend construido
-COPY --from=frontend-build /app/frontend/dist/frontend /app/static
+COPY --from=frontend-build /app/frontend/dist/algedro-frontend /app/static
 
 # Instalar Nginx
 RUN apk add --no-cache nginx
