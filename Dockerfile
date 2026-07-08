@@ -47,6 +47,10 @@ RUN echo 'server { \
 ENV SPRING_PROFILES_ACTIVE=prod
 ENV SERVER_PORT=8080
 
+RUN mkdir -p /app/static && \
+    chown -R nginx:nginx /app/static && \
+    chmod -R 755 /app/static
+
 EXPOSE 80
 
 CMD sh -c "nginx -g 'daemon off;' & java -jar app.jar"
