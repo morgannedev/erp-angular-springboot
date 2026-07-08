@@ -4,7 +4,6 @@ WORKDIR /app/frontend
 COPY frontend/package*.json ./
 RUN npm ci
 COPY frontend/ ./
-RUN cp tsconfig.json tsconfig.app.json
 RUN npm run build -- --configuration production
 
 # Construir el backend
