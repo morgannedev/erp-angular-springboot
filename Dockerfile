@@ -25,15 +25,20 @@ COPY --from=backend-build /app/backend/target/*.jar app.jar
 # Copiar el frontend construido
 COPY --from=frontend-build /app/frontend/dist/algedro-frontend /app/static
 
+RUN echo "=== CONTENIDO DE /app/static ===" && \
+    ls -la /app/static && \
+    echo "=== FIN ==="
+
 # Instalar Nginx
 RUN apk add --no-cache nginx
 
-# Configurar Nginx
+# Configurar Nginx (versión mejorada)
 RUN echo 'server { \
     listen 80; \
     server_name localhost; \
+    root /app/static; \
+    index index.html; \
     location / { \
-        root /app/static; \
         try_files $uri $uri/ /index.html; \
     } \
     location /api/ { \
@@ -41,16 +46,26 @@ RUN echo 'server { \
         proxy_set_header Host $host; \
         proxy_set_header X-Real-IP $remote_addr; \
     } \
+    error_log /var/log/nginx/error.log debug; \
 }' > /etc/nginx/http.d/default.conf
 
 # Variables de entorno
 ENV SPRING_PROFILES_ACTIVE=prod
 ENV SERVER_PORT=8080
 
+# Asegurar permisos
 RUN mkdir -p /app/static && \
     chown -R nginx:nginx /app/static && \
     chmod -R 755 /app/static
 
 EXPOSE 80
 
-CMD sh -c "nginx -g 'daemon off;' & java -jar app.jar"
+# Script de inicio mejorado
+RUN echo '#!/bin/sh' > /start.sh && \
+    echo 'echo "=== Iniciando Nginx ==="' >> /start.sh && \
+    echo 'nginx -g "daemon off;" &' >> /start.sh && \
+    echo 'echo "=== Iniciando Spring Boot ==="' >> /start.sh && \
+    echo 'java -jar app.jar' >> /start.sh && \
+    chmod +x /start.sh
+
+CMD ["/start.sh"]
