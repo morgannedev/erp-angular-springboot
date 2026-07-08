@@ -5,15 +5,11 @@ COPY frontend/package*.json ./
 RUN npm ci
 COPY frontend/ ./
 RUN cp tsconfig.json tsconfig.app.json
-RUN npm run build -- --configuration production
-
-# DEPURACIÓN  
-RUN echo "=== CONTENIDO DE /app/frontend/dist (completo) ===" && \
-    find /app/frontend/dist -type f && \
-    echo "=== FIN ===" && \
-    echo "=== CONTENIDO DE /app/frontend (raíz) ===" && \
-    ls -la /app/frontend && \
-    echo "=== FIN ==="
+#  CAMBIA ESTA LÍNEA 
+RUN npx ng build --configuration production --output-path=dist/algedro-frontend
+#  DEPURACIÓN 
+RUN echo "=== CONTENIDO DE /app/frontend ===" && ls -la /app/frontend && echo "=== FIN ===" && \
+    echo "=== CONTENIDO DE /app/frontend/dist ===" && ls -la /app/frontend/dist && echo "=== FIN ==="
 
 # Construir el backend
 FROM maven:3.9-eclipse-temurin-17-alpine AS backend-build
