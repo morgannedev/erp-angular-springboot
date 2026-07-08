@@ -28,7 +28,7 @@ COPY --from=frontend-build /app/frontend/dist/algedro-frontend /app/static
 # Instalar Nginx
 RUN apk add --no-cache nginx
 
-# Configurar Nginx para servir el frontend y proxy al backend
+# Configurar Nginx
 RUN echo 'server { \
     listen 80; \
     server_name localhost; \
@@ -49,9 +49,4 @@ ENV SERVER_PORT=8080
 
 EXPOSE 80
 
-# Script de inicio
-RUN echo '#!/bin/sh \n\
-nginx -g "daemon off;" & \n\
-java -jar app.jar' > /start.sh && chmod +x /start.sh
-
-CMD ["/start.sh"]
+CMD sh -c "nginx -g 'daemon off;' & java -jar app.jar"
