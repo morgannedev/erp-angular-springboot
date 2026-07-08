@@ -6,9 +6,13 @@ RUN npm ci
 COPY frontend/ ./
 RUN cp tsconfig.json tsconfig.app.json
 RUN npm run build -- --configuration production
-# 🔽 DEPURACIÓN DEL FRONTEND 🔽
-RUN echo "=== CONTENIDO DE /app/frontend/dist ===" && \
-    ls -la /app/frontend/dist && \
+
+# DEPURACIÓN  
+RUN echo "=== CONTENIDO DE /app/frontend/dist (completo) ===" && \
+    find /app/frontend/dist -type f && \
+    echo "=== FIN ===" && \
+    echo "=== CONTENIDO DE /app/frontend (raíz) ===" && \
+    ls -la /app/frontend && \
     echo "=== FIN ==="
 
 # Construir el backend
@@ -29,7 +33,7 @@ COPY --from=backend-build /app/backend/target/*.jar app.jar
 # Copiar el frontend construido
 COPY --from=frontend-build /app/frontend/dist/algedro-frontend /app/static
 
-# 🔽 DEPURACIÓN DEL DIRECTORIO ESTÁTICO 🔽
+# DEPURACIÓN DEL DIRECTORIO ESTÁTICO
 RUN echo "=== CONTENIDO DE /app/static ===" && \
     ls -la /app/static || echo "El directorio /app/static está vacío o no existe" && \
     echo "=== FIN ==="
